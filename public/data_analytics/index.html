@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IEEE RAS Admin Dashboard</title>
+  <!-- GIS for OAuth2 -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- SQL.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>IEEE RAS Admin Dashboard</h1>
+  <div id="notification" style="font-size:2rem;color:red;text-align:center;margin:1rem 0;"></div>
+
+  <!-- User info sections -->
+  <div class="user-info hidden" id="google-user-info">
+    <img id="google-user-pic" src="" alt="Google User">
+    <span id="google-user-name"></span>
+  </div>
+  
+  <div class="user-info hidden" id="hcb-user-info">
+    <img id="hcb-user-pic" src="" alt="HCB User">
+    <div>
+      <span id="hcb-user-name"></span>
+      <span id="hcb-user-email"></span>
+    </div>
+  </div>
+
+  <!-- Google Sheets Section -->
+  <div class="section" id="google-section">
+    <h2>Google Sheets Data</h2>
+    <button id="signin">🔐 Sign in with Google</button>
+    <button id="load" disabled>📄 Load sheet</button>
+    <button id="signout" hidden>🚪 Sign out</button>
+  </div>
+
+  <!-- HCB Section -->
+  <div class="section" id="hcb-section">
+    <h2>Hack Club Bank Data</h2>
+    <div id="hcb-controls">
+      <button id="hcb-login-btn">🔒 Login to HCB</button>
+      <button id="hcb-logout-btn" class="hidden">🔓 Log out of HCB</button>
+    </div>
+
+    <div id="hcb-paste-pane" class="hidden" style="margin-top: 1rem;">
+      <label>
+        Paste redirect URL (hcb://?code=…&state=…):
+        <input id="hcb-redirect-input" placeholder="hcb://?code=…&state=…" style="width: 100%;" />
+      </label>
+      <button id="hcb-process-btn">Process OAuth Callback</button>
+    </div>
+
+    <div id="hcb-api-buttons" class="hidden" style="margin-top: 1rem;">
+      <label>
+        Org slug:
+        <input id="hcb-org-input" class="inline-input" value="austin-ieee-ras" />
+      </label>
+      <button id="hcb-sync-donations-btn">Sync Donations to SQLite</button>
+      <label>
+        Max pages:
+        <input id="hcb-max-pages-input" type="number" value="2" class="inline-input" />
+      </label>
+    </div>
+  </div>
+
+  <!-- Dynamic table view controls -->
+  <div class="section" id="tableview-section">
+    <h2>Table Views</h2>
+    <div id="tableview-controls"></div>
+  </div>
+
+  <div id="table-container"></div>
+  <div id="hcb-output"></div>
+  <div id="db-tables"></div>
+  <canvas id="chartCanvas" width="640" height="400"></canvas>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
