@@ -10,10 +10,10 @@ Host *.cs.utexas.edu
     User karma
 Host panel.utweb.utexas.edu
     HostName panel.utweb.utexas.edu
-    PreferredAuthentications password
     ProxyJump linux.cs.utexas.edu
     User km54774
 EOF
+
 #ssh -F "$TMP_SSH_CFG" km54774@panel.utweb.utexas.edu 
 #exit
 # Build site

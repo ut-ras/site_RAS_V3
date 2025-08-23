@@ -1,0 +1,68 @@
+# .github/workflows/deploy.yml
+name: Deploy site
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Avoid overlapping deploys on the same branch
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    # Secrets aren't available to PRs from forks; skip to avoid failures.
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          # Pin to your project’s version if you have an "engines.node" in package.json
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start ssh-agent and add key
+        # Expects your OpenSSH private key in: Settings → Secrets and variables → Actions → New repository secret
+        # Name it SSH_PRIVATE_KEY
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          eval "$(ssh-agent -s)"
+          # Write key to a file with correct permissions, then add to agent
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ci
+          chmod 600 ~/.ssh/id_ci
+          ssh-add ~/.ssh/id_ci
+
+      - name: Preload known_hosts for jump + target
+        run: |
+          set -euo pipefail
+          # Add both hosts you connect to so ssh/scp won't prompt
+          ssh-keyscan -T 10 linux.cs.utexas.edu >> ~/.ssh/known_hosts 2>/dev/null
+          ssh-keyscan -T 10 panel.utweb.utexas.edu >> ~/.ssh/known_hosts 2>/dev/null
+          chmod 644 ~/.ssh/known_hosts
+          # Optional: show what we added for debugging
+          echo "known_hosts entries:"
+          wc -l ~/.ssh/known_hosts
+
+      - name: Run deploy script
+        env:
+          # If your script relies on any env vars, export them here.
+          # Example: NODE_ENV=production
+          NODE_ENV: production
+        run: |
+          set -euo pipefail
+          bash ./deploy.sh
+
