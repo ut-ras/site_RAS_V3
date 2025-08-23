@@ -28,7 +28,7 @@ scp -F "$TMP_SSH_CFG" -r dist/* panel.utweb.utexas.edu:/home/utweb/utw10091/publ
 
 # Fix permissions
 ssh -F "$TMP_SSH_CFG" panel.utweb.utexas.edu \
-    "chmod -R o+rX /home/utweb/utw10091/public_html"
+    "chmod -R o+rX /home/utweb/utw10091/public_html" || true
 
 echo "Done."
 
