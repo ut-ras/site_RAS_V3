@@ -1,11 +1,24 @@
 <IfModule mod_rewrite.c>
-        RewriteEngine On
-        RewriteRule ^([^/]+)/$ $1.html
-        RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteRule ^([^/]+)/$ $1.html
-        RewriteRule ^([^/]+)/([^/]+)/$ /$1/$2.html
-        RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteCond %{REQUEST_FILENAME} !-d
-        RewriteCond %{REQUEST_URI} !(\.[a-zA-Z0-9]{1,5}|/)$
-        RewriteRule (.*)$ /$1/ [R=301,L]
+  RewriteEngine On
+
+  # 0) Let real files/dirs pass through
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 1) If a directory-style path has an index.html, serve it
+  #    (works for any depth, with or without a trailing slash)
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^(.+?)/?$ $1/index.html [L]
+
+  # 2) Canonicalize: if index.html exists but URL lacks trailing slash, redirect to add it
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^(.+[^/])$ $1/ [R=301,L]
+
+  # 3) For other extensionless URLs, add a trailing slash (your original behavior)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !(\.[a-zA-Z0-9]{1,5}|/)$
+  RewriteRule (.*)$ /$1/ [R=301,L]
 </IfModule>

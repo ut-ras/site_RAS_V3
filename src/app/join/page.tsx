@@ -23,26 +23,18 @@ const JoinPage: React.FC = () => {
           <br />
           New members are required to fill a{' '}
           <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSf5v1L3MB3naSaYESixKXnwWSFYm6uatYRvCiesrBWiLwvQuQ/viewform"
+            href="https://forms.gle/ApJrJw7zuGN56PVf9"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#BF5700] underline hover:text-[#cc7933]"
           >
-            Membership Form
-          </a>{' '}
-          and{' '}
-          <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSdRvNc2R3vnG0AXu4k7bypacyeB2jgF_D1nDPq76kE8WIIBmQ/viewform"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#BF5700] underline hover:text-[#cc7933]"
-          >
-            Safety Waiver
-          </a>.
+            Membership & Attendance Form
+          </a>
+          .
           <br />
           Pay membership dues{' '}
           <a
-            href="https://utdirect.utexas.edu/nlogon/txshop/item_details.WBX?application_name=ENENGALU&component=0&dept_prefix=E2&item_id=199&cat_seq_chosen=02&subcategory_seq_chosen=000"
+            href="https://hcb.hackclub.com/donations/start/austin-ieee-ras"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#BF5700] underline hover:text-[#cc7933]"

@@ -26,8 +26,8 @@ echo "Copying files to remote directory..."
 scp -F "$TMP_SSH_CFG" -r dist/* panel.utweb.utexas.edu:/home/utweb/utw10091/public_html/
 
 # Fix permissions
-#ssh -F "$TMP_SSH_CFG" panel.utweb.utexas.edu \
-#    "chmod -R 775 /home/utweb/utw10091/public_html"
+ssh -F "$TMP_SSH_CFG" panel.utweb.utexas.edu \
+    "chmod -R o+rX /home/utweb/utw10091/public_html"
 
 echo "Done."
 
