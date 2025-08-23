@@ -51,7 +51,7 @@ jobs:
           # If your script relies on any env vars, export them here.
           # Example: NODE_ENV=production
           NODE_ENV: production
-          SSH_OPTS: -o StrictHostKeyChecking=accept-new -o IdentitiesOnly=yes -o PreferredAuthentications=publickey
+          SSH_OPTS: -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -o PreferredAuthentications=publickey
         run: |
           set -euo pipefail
           bash ./deploy.sh
