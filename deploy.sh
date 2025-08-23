@@ -23,8 +23,8 @@ echo "Done."
 
 # Copy files to remote directory
 echo "Copying files to remote directory..."
-scp -vvv $SSH_OPTS -F "$TMP_SSH_CFG" -r dist/* panel.utweb.utexas.edu:/home/utweb/utw10091/public_html/
 echo $SSH_OPTS
+scp -vvv $SSH_OPTS -F "$TMP_SSH_CFG" -r dist/* panel.utweb.utexas.edu:/home/utweb/utw10091/public_html/
 
 # Fix permissions
 ssh $SSH_OPTS -F "$TMP_SSH_CFG" panel.utweb.utexas.edu \
