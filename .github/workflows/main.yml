@@ -55,7 +55,7 @@ jobs:
           chmod 644 ~/.ssh/known_hosts
           # Optional: show what we added for debugging
           echo "known_hosts entries:"
-          wc -l ~/.ssh/known_hosts
+          wc -l ~/.ssh/known_hosts || echo not found
 
       - name: Run deploy script
         env:
