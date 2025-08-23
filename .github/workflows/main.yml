@@ -49,13 +49,21 @@ jobs:
       - name: Preload known_hosts for jump + target
         run: |
           set -euo pipefail
-          # Add both hosts you connect to so ssh/scp won't prompt
-          ssh-keyscan -T 10 linux.cs.utexas.edu >> ~/.ssh/known_hosts 2>/dev/null
-          ssh-keyscan -T 10 panel.utweb.utexas.edu >> ~/.ssh/known_hosts 2>/dev/null
+          # Emit a GitHub Actions error annotation with the failing line + command
+          trap 'echo "::error::failed at line ${LINENO}: ${BASH_COMMAND}"' ERR
+      
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          : > ~/.ssh/known_hosts  # ensure file exists
+      
+          # Let these fail if they error, so the trap fires and you see which line
+          ssh-keyscan -T 10 -H linux.cs.utexas.edu >> ~/.ssh/known_hosts 2>/dev/null
+          ssh-keyscan -T 10 -H panel.utweb.utexas.edu >> ~/.ssh/known_hosts 2>/dev/null
+      
           chmod 644 ~/.ssh/known_hosts
-          # Optional: show what we added for debugging
+      
           echo "known_hosts entries:"
-          wc -l ~/.ssh/known_hosts || echo not found
+          wc -l ~/.ssh/known_hosts
 
       - name: Run deploy script
         env:
