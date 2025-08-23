@@ -46,25 +46,11 @@ jobs:
           chmod 600 ~/.ssh/id_ci
           ssh-add ~/.ssh/id_ci
 
-      - name: Preload known_hosts for jump + target
+      - name: Run deploy script (disable host checking)
         run: |
-          set -euo pipefail
-          # Emit a GitHub Actions error annotation with the failing line + command
-          trap 'echo "::error::failed at line ${LINENO}: ${BASH_COMMAND}"' ERR
-      
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          : > ~/.ssh/known_hosts  # ensure file exists
-      
-          # Let these fail if they error, so the trap fires and you see which line
-          ssh-keyscan -T 10 -H linux.cs.utexas.edu >> ~/.ssh/known_hosts 2>/dev/null
-          ssh-keyscan -T 10 -H panel.utweb.utexas.edu >> ~/.ssh/known_hosts 2>/dev/null
-      
-          chmod 644 ~/.ssh/known_hosts
-      
-          echo "known_hosts entries:"
-          wc -l ~/.ssh/known_hosts
-
+          alias ssh='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+          alias scp='scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+          bash ./deploy.sh
       - name: Run deploy script
         env:
           # If your script relies on any env vars, export them here.
