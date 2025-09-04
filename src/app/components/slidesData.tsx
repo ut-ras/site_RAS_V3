@@ -38,15 +38,6 @@ export const committeesSlides = [
         ]
     },
     {
-        title: "IGVC",
-        linkLink: "https://discord.gg/Tcs987kkTp",
-        linkTitle: "Discord",
-        slides: [
-            { img: '/images/slides/igvc-ranger.png', caption: "IGVC - Ranger", link: "https://ut-ieee-ras.notion.site/ebd/1cfebc1c5714805199ecf274ec0dfd1f" },
-        
-        ]
-    },
-    {
         title: "Robotathon",
         linkLink: null,
         linkTitle: null,

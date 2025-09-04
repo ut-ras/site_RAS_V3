@@ -81,14 +81,6 @@ const JoinPage: React.FC = () => {
               Committee Specific Discords
             </div>
             <a
-              href="https://discord.gg/Tcs987kkTp"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#BF5700] text-[clamp(1rem,3vw,1.5rem)] font-bold underline hover:text-[#cc7933]"
-            >
-              IGVC
-            </a>
-            <a
               href="https://discord.gg/fU7qEDc322"
               target="_blank"
               rel="noopener noreferrer"
