@@ -28,7 +28,7 @@ const JoinPage: React.FC = () => {
             rel="noopener noreferrer"
             className="text-[#BF5700] underline hover:text-[#cc7933]"
           >
-            Membership & Attendance Form
+            Membership & Attendance & T-Shirt Form
           </a>
           .
           <br />
