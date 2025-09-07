@@ -32,16 +32,7 @@ const JoinPage: React.FC = () => {
           </a>
           .
           <br />
-          Pay membership dues{' '}
-          <a
-            href="https://hcb.hackclub.com/donations/start/austin-ieee-ras"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#BF5700] underline hover:text-[#cc7933]"
-          >
-            here!
-          </a>
-        </p>
+          </p>
 
         <div className="flex flex-col md:flex-row items-start mt-10 gap-8">
           <div className="flex flex-col space-y-4 md:w-1/2">
