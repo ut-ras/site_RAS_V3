@@ -4,23 +4,23 @@ import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import Modal from './Modal';
 import rehypeRaw from 'rehype-raw';
-import { Post } from '../components/posts';
+import { Post } from './posts';
 import Navbar from './Navbar';
-import Footer from '../components/footer';
-import Image from 'next/image'; // Added import for next/image
+import Footer from './footer';
+import Image from 'next/image';
 
 interface BlogListProps {
   posts: Post[];
 }
 
 const BlogList: React.FC<BlogListProps> = ({ posts }) => {
-
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   if (!posts.length) {
     return <div>No posts found. Please check your _posts folder.</div>;
   }
+  
   const openModal = (post: Post) => {
     setSelectedPost(post);
     setIsModalOpen(true);
@@ -40,30 +40,33 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
             Blog Posts
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full">
-            {posts.map((post) => (
+            {posts.map((post, index) => (
               <div
                 key={post.slug}
                 onClick={() => openModal(post)}
                 className="border border-gray-200 rounded-lg p-4 md:p-6 cursor-pointer 
                          bg-[#e6e4d8] hover:bg-[#d4d2c6] transition-colors duration-200 inline-flex"
               >
-              <div className = "flex-col flex">
-                <div className="text-sm md:text-base text-gray-600 mb-3">
-                  {post.date}
+                <div className="flex-col flex">
+                  <div className="text-sm md:text-base text-gray-600 mb-3">
+                    {post.date}
+                  </div>
+                  <div className="text-lg md:text-xl font-bold pr-2">
+                    {post.title}
+                  </div>
                 </div>
-                <div className="text-lg md:text-xl font-bold pr-2">
-                  {post.title}
-                </div>
-              </div>
-              {post.image && (
-                <Image
-                  src={post.image}
-                  alt=""
-                  className="w-[40%] ml-auto object-cover"
-                  width={200}
-                  height={200}
-                />
-              )}
+                {post.image && (
+                  <Image
+                    src={post.image}
+                    alt={post.title}
+                    className="w-[40%] ml-auto object-cover rounded"
+                    priority={index < 6}
+                    loading={index < 6 ? "eager" : "lazy"}
+                    sizes="(max-width: 768px) 40vw, (max-width: 1024px) 25vw, 200px"
+                    width={200}
+                    height={200}
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -78,7 +81,22 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
                   {selectedPost.date}
                 </p>
                 <div className="prose max-w-none">
-                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                  <ReactMarkdown 
+                    rehypePlugins={[rehypeRaw]}
+                    components={{
+                      img: ({ src, alt, ...props }: any) => (
+                        <Image
+                          src={src || ''}
+                          alt={alt || ''}
+                          className="rounded-lg max-w-full h-auto"
+                          width={600}
+                          height={400}
+                          loading="lazy"
+                          {...props}
+                        />
+                      ),
+                    }}
+                  >
                     {selectedPost.content}
                   </ReactMarkdown>
                 </div>

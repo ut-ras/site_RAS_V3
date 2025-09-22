@@ -7,12 +7,15 @@ import { leaders, officers, teamleads } from '../components/officersData';
 import Footer from '../components/footer';
 
 
+const blurDataURL = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyEhck+C3Hx2lhE6mZAFr2n7CRaIDFwJULk5LlhQDg/f5Vfo";
+
 const LeaderPage: React.FC = () => {
   const handleClick = (link) => {
     if (link) {
       window.open(link, '_blank');
     }
   };
+  
   return (
     <>
       <Navbar scrollSet={false} />
@@ -37,6 +40,10 @@ const LeaderPage: React.FC = () => {
                     alt={member.name}
                     className="object-contain rounded-full"
                     placeholder='blur'
+                    blurDataURL={blurDataURL}
+                    priority={index < 4}
+                    loading={index < 4 ? "eager" : "lazy"}
+                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 25vw, (max-width: 1024px) 25vw, 200px"
                     fill
                   />
               </div>
@@ -71,6 +78,10 @@ const LeaderPage: React.FC = () => {
                     alt={member.name}
                     className="object-cover rounded-full"
                     placeholder='blur'
+                    blurDataURL={blurDataURL}
+                    priority={index < 4}
+                    loading={index < 4 ? "eager" : "lazy"}
+                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 25vw, (max-width: 1024px) 25vw, 200px"
                     fill
                   />
               </div>
@@ -104,6 +115,10 @@ const LeaderPage: React.FC = () => {
                   alt={member.name}
                   className="object-cover rounded-full"
                   placeholder='blur'
+                  blurDataURL={blurDataURL}
+                  priority={index < 6}
+                  loading={index < 6 ? "eager" : "lazy"}
+                  sizes="(max-width: 640px) 64px, (max-width: 768px) 96px, 96px"
                   fill
                 />
               </div>
