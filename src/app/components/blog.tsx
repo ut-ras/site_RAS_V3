@@ -84,15 +84,14 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
                   <ReactMarkdown 
                     rehypePlugins={[rehypeRaw]}
                     components={{
-                      img: ({ src, alt, ...props }: any) => (
+                      img: (props) => (
                         <Image
-                          src={src || ''}
-                          alt={alt || ''}
+                          src={props.src || ''}
+                          alt={props.alt || ''}
                           className="rounded-lg max-w-full h-auto"
                           width={600}
                           height={400}
                           loading="lazy"
-                          {...props}
                         />
                       ),
                     }}
