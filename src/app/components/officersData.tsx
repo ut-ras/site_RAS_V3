@@ -12,7 +12,7 @@ import GraceLiPic from '../../../public/images/leaders/Grace-Li.jpg';
 import GustavoVillalobosPic from '../../../public/images/leaders/Gustavo.jpg';
 import HasifShaikhPic from '../../../public/images/leaders/Hasif-Shaikh.jpg';
 import JakeTomczesynPic from '../../../public/images/leaders/Jake-Tomczesyn.jpg';
-import JeffreyChangPic from '../../../public/images/leaders/Jeffrey-Chang.jpg';
+//import JeffreyChangPic from '../../../public/images/leaders/Jeffrey-Chang.jpg';
 import JiwooParkPic from '../../../public/images/leaders/Jiwoo-Park.jpg';
 import KarmanyaahMalhotraPic from '../../../public/images/leaders/Karmanyaah-Malhotra.jpg';
 import LakshayGuptaPic from '../../../public/images/leaders/Lakshay-Gupta.jpg';
@@ -24,7 +24,7 @@ import TylerHomPic from '../../../public/images/leaders/Tyler-Hom.jpg';
 import WillRegerPic from '../../../public/images/leaders/Will-Reger.jpg';
 import YilinJinPic from '../../../public/images/leaders/Yilin-Jin.jpg';
 import ZaaraBilalPic from '../../../public/images/leaders/Zaara-Bilal.jpg';
-import MorrisPic from '../../../public/images/leaders/Zaara-Bilal.jpg'
+//import MorrisPic from '../../../public/images/leaders/Zaara-Bilal.jpg'
 import EvanPic from '../../../public/images/leaders/Evan Lai.jpg'
 
 
