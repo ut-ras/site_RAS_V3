@@ -41,56 +41,9 @@ export function getPosts(): Post[] {
       
       const content = lines.slice(1).join('\n');
       
-      // First, try to find image in markdown content
       const imageRegex = /!\[.*?\]\((.*?)\)/;
       const imageMatch = content.match(imageRegex);
-      let image = imageMatch ? imageMatch[1] : '';
-      
-      // If no image found in content, look for image based on post filename
-      if (!image) {
-        const baseName = fileName.replace(/\.md$/, '');
-        // Try common image extensions
-        const extensions = ['.jpg', '.jpeg', '.png', '.gif'];
-        const imagePaths = [
-          `/images/blog/${baseName}/`,
-          `/images/blog/${baseName.toLowerCase()}/`,
-          `/images/posts/${baseName}/`,
-          `/images/posts/${baseName.toLowerCase()}/`
-        ];
-        
-        // Check if any standard image exists
-        for (const imagePath of imagePaths) {
-          for (const ext of extensions) {
-            const potentialImage = `${imagePath}featured${ext}`;
-            const potentialImage2 = `${imagePath}main${ext}`;
-            const potentialImage3 = `${imagePath}1${ext}`;
-            
-            // You'd need to check if file exists in public folder
-            // For now, let's use a simpler approach based on your existing structure
-            try {
-              const publicPath = path.join(process.cwd(), 'public', imagePath.slice(1));
-              if (fs.existsSync(publicPath)) {
-                const files = fs.readdirSync(publicPath);
-                const imageFile = files.find(file => 
-                  extensions.some(ext => file.toLowerCase().endsWith(ext))
-                );
-                if (imageFile) {
-                  image = `${imagePath}${imageFile}`;
-                  break;
-                }
-              }
-            } catch (e) {
-              // Directory doesn't exist, continue
-            }
-          }
-          if (image) break;
-        }
-      }
-      
-      // Use default image if still no image found
-      if (!image) {
-        image = DEFAULT_IMAGE;
-      }
+      const image = imageMatch ? imageMatch[1] : DEFAULT_IMAGE;
       
       const baseName = fileName.replace(/\.md$/, '');
       const parts = baseName.split('-');
