@@ -28,7 +28,7 @@ Any RAS member can join, any year and major. No experience is needed :) I encour
 
 
 ### Fundraising Opportunity 
-![flyer .](/src/_posts//blog/2022-2-15-Corporate/Corporate2.22.png)
+![flyer .](/images/blog/2022-2-15-Corporate/Corporate2.22.png)
 
 Starting on February 9th, we will be participating in a fundraising effort to support our RoboMaster Committee. Donations will aid the team to acquire parts, facilitate travel, and host outreach opportunities in our community. 
 

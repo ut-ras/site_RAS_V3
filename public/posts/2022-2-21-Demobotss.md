@@ -5,7 +5,7 @@ A new semester is off to a great start! The Demobots we have been working on thi
 
 I'll begin with TOA, our claw machine demobot. The mechanical team’s current goals are getting the prototype of the z-axis (the claw) put together so the electrical team can work on wiring the winch and claw-closing mechanism and getting the new design for the arcade casing designed for laser cutting.(seen bellow is a shot of the extremely technical methods the team is using).
 
-![demobots pictures .](/src/_posts//blog/2022-2-21-Demobots/2.21.22.demobots.JPG)
+![demobots pictures .](/images/blog/2022-2-21-Demobots/2.21.22.demobots.JPG)
 
 The other Demobot which has exciting updates in the Couchbot. After an unfortunate start to the semester when we found the Couchbot's batteries dead, the Couchbot team is currently looking for new members to get the bot up and running again! The Couchbot team has successfully been able to take the couch to the floor of the EER, start, and drive it around on multiple occasions. They are currently planning the next steps in the Couchbot’s journey, will this include colorful lights? Waterproofing? Speakers? Only time can tell what fun things are in store. 
 

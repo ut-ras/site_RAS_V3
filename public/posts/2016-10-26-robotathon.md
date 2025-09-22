@@ -9,5 +9,5 @@ Students complete weekly objectives to learn skills such as electronics, mechani
 
 Read the rules [here](https://docs.google.com/document/d/1TISEqDJPAkd4yec3cAYTjoDd_dGn6QOEaWKRNHWkeyw/edit)!
 
-![This year's Robotathon field](/src/_posts//images/2016-robotathon-field-cad.jpg)
+![This year's Robotathon field](/images/blog/2016-robotathon-field-cad.jpg)
 

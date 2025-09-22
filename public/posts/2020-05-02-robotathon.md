@@ -13,7 +13,7 @@ So, our Robotathon Guide is in the works! Spoiler image below (I've whited out c
 
 I don't anticipate releasing the entire guide onto the site until Kickoff, but you may see a couple of pages during update posts in the summer.
 
-![Robotathon Guide Table of Contents](/src/_posts//blog/2020-05-02-robotathon/toc.png)
+![Robotathon Guide Table of Contents](/images//blog/2020-05-02-robotathon/toc.png)
 
 
 ## Codebase

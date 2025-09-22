@@ -59,7 +59,7 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
                 <Image
                   src={post.image}
                   alt=""
-                  className="w-[40%] ml-auto"
+                  className="w-[40%] ml-auto object-cover"
                   width={200}
                   height={200}
                 />

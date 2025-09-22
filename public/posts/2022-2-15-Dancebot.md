@@ -7,7 +7,7 @@ Just wanted to provide a quick update on behalf of Dancebot! We had a first succ
 
 We are focusing on essential hardware systems, mainly getting our motors to move in a controlled manner with our existing software. Since we had new members, we are currently focused on skill development to ensure everyone has the fundamentals they need. 
 
-![circuit .](/src/_posts//blog/2022-2-15-Dancebot/Dancebot2.22.JPG)
+![circuit .](/images/blog/2022-2-15-Dancebot/Dancebot2.22.JPG)
 
 One of the major topics we discussed was the function of an H-bridge circuit. This is perhaps one of the most fundamental circuits in regards to motor control. By allowing for transistors act as current controlled current limiters or switches, one can control the direction and flow of a current through a motor. 
 

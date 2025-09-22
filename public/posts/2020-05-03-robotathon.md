@@ -6,7 +6,7 @@ In this post, I'll break down the budget into sections and talk about what is ne
 
 Alright, let's go! The main feature of this blog post is this pie chart below:
 
-![Cost Breakdown by Category](/src/_posts//blog/2020-05-03-robotathon/cost_breakdown.png)
+![Cost Breakdown by Category](/images//blog/2020-05-03-robotathon/cost_breakdown.png)
 
 <br>I'll only be working with magnitudes and percents here, since I'm restricted from releasing specific numbers.
 

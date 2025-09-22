@@ -4,7 +4,7 @@
 Micromouse is getting ready for the final stretch now. We are working on updating our PCB and software to get the mouse ready for the competition.
 
 PCB:
-![PCB Design](/src/_posts//blog/2019-04-05-micromouse/pcb.png)
+![PCB Design](/images//blog/2019-04-05-micromouse/pcb.png)
 
 To get ready for the competition, we are working on making the pcb the frame for the device. The current design above contains all the components that we need to run the mouse. We are migrating the components from the V0 prototype to this prototype.
 

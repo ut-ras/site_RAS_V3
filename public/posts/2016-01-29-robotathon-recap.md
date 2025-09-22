@@ -20,7 +20,7 @@ robotics and has typically competed in Robotathon in a previous year. We also
 offered weekly workshops, hosted by an experienced member of RAS, to get teams
 prepared for the weekly checkpoints. 
 
-![This year's Robotathon field](/src/_posts/blog/2016-01-29-robotathon-recap/field.png)
+![This year's Robotathon field](/images/blog/2016-01-29-robotathon-recap/field.png)
 
 The first step of the competition this year was to introduce teams to their
 mentors for the competition and to begin mechanical design. All teams had to get
@@ -52,7 +52,7 @@ chose to laser cut their designs out of acrylic or wood as it was a very
 mechanical-design heavy competition. Some teams even 3D printed parts for their
 sorting mechanisms. 
 
-![Turbolifts member Mark working on Robot](/src/_posts//blog/2016-01-29-robotathon-recap/turbolifts.jpg)
+![Turbolifts member Mark working on Robot](/images//blog/2016-01-29-robotathon-recap/turbolifts.jpg)
 
 After the mechanical portion of the robots was completed, teams began work on
 their autonomous algorithms. Their three goals over the next few weeks were to
@@ -79,12 +79,12 @@ lowered gate. The robot would then find a goal, back towards it, then pull
 forward using the inertia of the balls themselves to drive the balls into the
 goal. 
 
-![The Avenger’s robot](/src/_posts//blog/2016-01-29-robotathon-recap/avengers.jpg)
+![The Avenger’s robot](/images//blog/2016-01-29-robotathon-recap/avengers.jpg)
 
 This year’s Robotathon was a huge success, and we hope to make it even bigger in
 future years. Hope to see you all there next year!
 
-![Robotathon 2015](/src/_posts//blog/2016-01-29-robotathon-recap/group.jpg)
+![Robotathon 2015](/images//blog/2016-01-29-robotathon-recap/group.jpg)
 
 ## Critics rave!
 

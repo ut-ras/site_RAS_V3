@@ -5,7 +5,7 @@ Hello all!
 
 I am excited to announce that RAS has put on a successful Robotathon Competition!
 
-![group photo .](/src/_posts//blog/2021-12-25-robotathon/robotathon-2021.1.jpg)
+![group photo .](/images/blog/2021-12-25-robotathon/robotathon-2021.1.jpg)
 
 Special thanks to Dr. Valvano, Burak, and Miguel for acting as judges for our competition! Also, a shoutout to Texas Instruments for supporting our competition with trainings and parts for participants. 
 
@@ -23,7 +23,7 @@ Robotathon is an event that RAS members look forward to every year. I am very pr
 
 Congratulations to Team 8 for winning first place in Robotathon! 
 
-![team 8 photo .](/src/_posts//blog/2021-12-25-robotathon/robotathon-2021.2.jpg)
+![team 8 photo .](/images/blog/2021-12-25-robotathon/robotathon-2021.2.jpg)
 
 
 Author: Ian Krause

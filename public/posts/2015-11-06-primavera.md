@@ -91,8 +91,8 @@ cv2.imwrite('out-kmeans.png', image)
 
 The output looks something like this:
 
-![Before](/src/_posts/blog/2015-11-06-primavera/frog.jpg)
-![After](/src/_posts//blog/2015-11-06-primavera/out-kmeans.png)
+![Before](/images/blog/2015-11-06-primavera/frog.jpg)
+![After](/images//blog/2015-11-06-primavera/out-kmeans.png)
 
 The output image contains only the RGB values shown above. It looks like a frog,
 but there's a problem: these colors have nothing to do with the colors of spray
@@ -160,8 +160,8 @@ list(names[centers_to_db])
      u'Fjord']
 
 
-![Before](/src/_posts//blog/2015-11-06-primavera/frog.jpg)
-![After](/src/_posts//blog/2015-11-06-primavera/out-database.png)
+![Before](/images//blog/2015-11-06-primavera/frog.jpg)
+![After](/images//blog/2015-11-06-primavera/out-database.png)
 
 The core of the conversion is the same; there's just a step before and after
 that we run through to get the best colors in our database. The output image has

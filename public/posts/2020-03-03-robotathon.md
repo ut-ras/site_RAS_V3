@@ -16,6 +16,6 @@ Where we are currently at:
 * We're debating a ruleset and scoring system that will be fair for all teams. There will be multiple ways to win points during this competition, so teams can become specialists or generalists.
 
 Here's a low res picture spoiler (our VP Reiko is designing some new art).
-![PAC MAN](/src/_posts//blog/2020-03-03-robotathon/PAC_MAN.jpg)
+![PAC MAN](/images//blog/2020-03-03-robotathon/PAC_MAN.jpg)
 If any of this sounds interesting we're always accepting members throughout the semester. There's plenty of software development, hardware integration, and leadership experience to be had here. You can join our slack at utras.slack.com and message me (@RoboticFish) or the other co-lead (@Burak Biyikli) or email me at matthewjkyu@gmail.com.
 Author: Matthew Yu
