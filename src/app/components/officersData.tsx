@@ -54,9 +54,6 @@ export const officers: officers[] = [
       name: 'Morris Lin', title: 'Secretary', email: 'morrislinyuan@utexas.edu',
       profileLink: '', picture: RasLogoBigPic },
     {
-      name: 'Andrew Senyszyn', title: 'Treasurer', email: 'Andrewsenyszyn@utexas.edu',
-      profileLink: '', picture: RasLogoBigPic },
-    {
       name: 'Colin Tan', title: 'Treasurer', email: 'colinyqt@utexas.edu',
       profileLink: '', picture: ColinTanPic },
     {
@@ -94,22 +91,13 @@ export const teamleads: officers[] = [
       profileLink: '', discord: 'thehominator', picture: TylerHomPic },
     {
       name: 'Suhas Voolla', title: 'Robomaster Committee Head', email: 'suhasv@utexas.edu',
-      profileLink: '', discord: '', picture: TylerHomPic },
+      profileLink: '', discord: '', picture: RasLogoBigPic },
     {
-    //   name: 'Jeffrey Chang', title: 'Robotathon Committee Head', email: '',
-    //   profileLink: '', discord: 'ohoftoryoy', picture: JeffreyChangPic },
-    // {
       name: 'Hasif Shaikh', title: 'VexU Committee Head', email: 'hasifshaikh@utexas.edu',
       profileLink: '', discord: 'has02', picture: HasifShaikhPic },
     {
       name: 'Natalie Best', title: 'VexU Committee Head', email: 'nbest776@utexas.edu',
       profileLink: '', discord: '', picture: RasLogoBigPic },
-    // {
-    //   name: 'Toby Nguyen', title: 'Fundraising', email: 'tan942@utexas.edu',
-    //   profileLink: '', discord: 'tguyen', picture: TobyNguyenPic },
-    // {
-    //   name: 'Grace Li', title: 'Corporate', email: 'gracewl@utexas.edu',
-    //   profileLink: '', discord: 'watchycat', picture: GraceLiPic },
 ];
 
 export const leaders: leaders[] = [
