@@ -22,3 +22,16 @@
   RewriteCond %{REQUEST_URI} !(\.[a-zA-Z0-9]{1,5}|/)$
   RewriteRule (.*)$ /$1/ [R=301,L]
 </IfModule>
+
+# ✅ Optional: better headers for sitemap & robots
+<IfModule mod_headers.c>
+  <Files "sitemap.xml">
+    Header unset Set-Cookie
+    Header set Cache-Control "public, max-age=86400"
+    Header set Content-Type "application/xml; charset=UTF-8"
+  </Files>
+  <Files "robots.txt">
+    Header set Content-Type "text/plain; charset=UTF-8"
+  </Files>
+</IfModule>
+
