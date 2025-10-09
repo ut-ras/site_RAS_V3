@@ -1,15 +1,17 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # 0) Let real files/dirs pass through
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule ^ - [L]
+  
 
   # 1) If a directory-style path has an index.html, serve it
   #    (works for any depth, with or without a trailing slash)
   RewriteCond %{REQUEST_FILENAME}/index.html -f
   RewriteRule ^(.+?)/?$ $1/index.html [L]
+
+# 0) Let real files/dirs pass through
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
 
   # 2) Canonicalize: if index.html exists but URL lacks trailing slash, redirect to add it
   RewriteCond %{REQUEST_FILENAME} !-f
