@@ -1,0 +1,395 @@
+body { font-family: sans-serif; margin: 2rem; }
+table { border-collapse: collapse; width: 100%; margin-bottom: 2rem; }
+th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
+.hidden { display: none; }
+.user-info { 
+  display: flex; 
+  align-items: center; 
+  margin-bottom: 1rem; 
+  padding: 0.5rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+.user-info img { 
+  width: 32px; 
+  height: 32px; 
+  border-radius: 50%; 
+  margin-right: 0.5rem; 
+}
+.section { 
+  margin-bottom: 2rem; 
+  padding: 1rem;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+.section h2 {
+  margin-top: 0;
+}
+button { 
+  padding: .55rem 1.1rem; 
+  font-size: 1rem; 
+  cursor: pointer; 
+  border: 1px solid #444; 
+  border-radius: .375rem; 
+  background: #fafafa; 
+  transition: background .2s; 
+  margin-right: .5rem; 
+  margin-bottom: 0.5rem;
+}
+button:hover { background: #f0f0f0; }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+input { padding: .55rem; box-sizing: border-box; margin-top: .6rem; }
+.inline-input { width: auto; display: inline-block; margin-right: .5rem; }
+
+/* Membership Form Styles */
+#membershipForm {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border: 1px solid #ddd;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+.radio-options,
+.checkbox-options {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.radio-options label,
+.checkbox-options label {
+  display: block;
+  font-weight: normal;
+  margin: 6px 0;
+}
+
+/* Radio options without scrolling */
+.radio-options {
+  padding-right: 10px;
+}
+
+.form-text {
+  color: #666;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
+.form-notice {
+  font-style: italic;
+  color: #555;
+  margin: 15px 0;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+/* Validation styling */
+.form-group input:invalid,
+.form-group select:invalid {
+  border-color: #ff6b6b;
+}
+
+.form-group input:valid:not(:placeholder-shown),
+.form-group select:valid:not([value=""]) {
+  border-color: #51cf66;
+}
+
+/* For the "other" input fields */
+#otherMajor, #otherMinor, #otherGradSemester, #otherGender, #otherRace {
+  margin-top: 10px;
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+}
+
+/* Success and error messages */
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 15px;
+  margin: 15px 0;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  margin: 15px 0;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+/* EID lookup styling */
+.eid-lookup {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  margin-bottom: 20px;
+}
+
+.status-message {
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.status-message.loading {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.status-message.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-message.warning {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Validation error text */
+.error-text {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
+/* Container that's hidden until EID is filled */
+.hidden-until-eid {
+  display: none;
+}
+
+.form-toggle-btn {
+  background-color: #bf5700; /* UT Austin burnt orange */
+  color: white;
+}
+
+.submit-btn {
+  background-color: #bf5700;
+  color: white;
+  padding: 12px 24px;
+  display: block;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 200px;
+}
+
+/* Link styling */
+.form-group a {
+  color: #bf5700;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.form-group a:hover {
+  text-decoration: underline;
+}
+
+/* Shop Table Styles */
+.shop-section {
+  margin-top: 40px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+
+.shop-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.shop-table th, 
+.shop-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.shop-table thead th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.item-photo {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.quantity-input {
+  width: 70px;
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.shop-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  margin-top: 20px;
+  border-top: 2px solid #ddd;
+}
+
+.total-amount {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.checkout-btn {
+  background-color: #bf5700;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.checkout-btn:hover {
+  background-color: #9e4600;
+}
+
+.purchased-cell {
+  text-align: center;
+  font-weight: bold;
+}
+
+.purchased-cell.has-purchases {
+  color: #008800;
+  background-color: #f0fff0;
+}
+
+/* Activity Section Styles */
+.activity-section {
+  margin-top: 40px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+  margin-bottom: 40px;
+}
+
+.activity-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.activity-button {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.activity-button input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.activity-button span {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #f5f5f5;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.activity-button:hover span {
+  background-color: #e8e8e8;
+}
+
+.activity-button input[type="checkbox"]:checked + span {
+  background-color: #bf5700;
+  color: white;
+  border-color: #9e4600;
+}
+
+/* Special styling for the Other button */
+.other-button {
+  display: flex;
+  align-items: center;
+}
+
+.other-button span {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.other-button input[type="text"] {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: none;
+  margin-top: 0;
+  height: 40px;
+  width: 120px;
+}
+
+/* Sub-options sections */
+.sub-options, .sub-options-container {
+  display: none;
+  margin: 10px 0 20px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.sub-options h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #bf5700;
+}
+
+/* Disabled state for the Log Activity button */
+.submit-btn.disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}

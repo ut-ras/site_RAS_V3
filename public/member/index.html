@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAS Member Portal</title>
+    <!-- Import the styles.css file -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>RAS Member Portal</h1>
+    </header>
+    
+    <main>
+        <div class="container">
+            <h2>Welcome to the Member Area</h2>
+            <p>This is the member portal for Robotics and Automation Society.</p>
+            
+            <div class="form-group eid-lookup">
+                <label for="eid">Enter your UT EID *</label>
+                <input type="text" id="eid" name="eid" required pattern="[a-z]{2,3}[0-9]{3,8}" title="Enter a valid UT EID (2-3 lowercase letters followed by 3-8 numbers)">
+                <small class="form-text">Your UT EID should be 2-3 lowercase letters followed by 3-8 numbers</small>
+                <div id="eidStatus" class="status-message"></div>
+            </div>
+            
+            <div id="contentAfterEid" class="hidden-until-eid">
+                <button onclick="toggleMembershipForm()" id="updateInfoBtn" class="form-toggle-btn">Update my info</button>
+                
+                <div id="membershipForm" style="display: none;">
+                <h3>RAS Membership Form</h3>
+                <form id="rasForm">
+                    <input type="hidden" id="formEid" name="eid" required>
+                    
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Have you joined our Discord? <a href="https://discord.gg/BTGXvPJm75" target="_blank">UT IEEE RAS Discord</a> *</label>
+                        <div class="radio-options">
+                            <label><input type="radio" name="joinedDiscord" value="Yes" required> Yes</label>
+                            <label><input type="radio" name="joinedDiscord" value="No" required> No</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Do you agree with the terms listed in our <a href="https://docs.google.com/document/d/1pm9BehQCuGPFe0BewaOvBgG68toN-OdqNVlQg-_4guM/edit?usp=sharing" target="_blank">safety waiver</a>? *</label>
+                        <div class="radio-options">
+                            <label><input type="radio" name="agreeToWaiver" value="Yes" required> Yes</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>What RAS committees are you interested in?</label>
+                        <div class="checkbox-options">
+                            <label><input type="checkbox" name="committees" value="RoboMaster"> RoboMaster</label>
+                            <label><input type="checkbox" name="committees" value="VexU"> VexU</label>
+                            <label><input type="checkbox" name="committees" value="Demobots"> Demobots</label>
+                            <label><input type="checkbox" name="committees" value="Robotathon"> Robotathon</label>
+                            <label><input type="checkbox" name="committees" value="Business"> Business</label>
+                            <label><input type="checkbox" name="committees" value="Advertising"> Advertising</label>
+                        </div>
+                    </div>
+                    
+                    <p class="form-notice">The following questions will not be used for any purpose other than for collecting statistics on the demographics of RAS:</p>
+                    
+                    <div class="form-group">
+                        <label>Major *</label>
+                        <div class="radio-options">
+                            <label><input type="radio" name="major" value="ECE" required> Electrical and Computer Engineering</label>
+                            <label><input type="radio" name="major" value="ME" required> Mechanical Engineering</label>
+                            <label><input type="radio" name="major" value="CS" required> Computer Science</label>
+                            <label><input type="radio" name="major" value="AE" required> Aerospace Engineering</label>
+                            <label><input type="radio" name="major" value="CE" required> Computational Engineering</label>
+                            <label><input type="radio" name="major" value="BME" required> Biomedical Engineering</label>
+                            <label><input type="radio" name="major" value="other" required> Other</label>
+                        </div>
+                        <input type="text" id="otherMajor" name="otherMajor" placeholder="If Other, please specify">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Minor</label>
+                        <div class="radio-options">
+                            <label><input type="radio" name="minor" value="Robotics"> Robotics</label>
+                            <label><input type="radio" name="minor" value="other"> Other</label>
+                        </div>
+                        <input type="text" id="otherMinor" name="otherMinor" placeholder="If Other, please specify">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Expected Graduation Semester *</label>
+                        <div class="radio-options">
+                            <label><input type="radio" name="gradSemester" value="Fa25" required> Fall 2025</label>
+                            <label><input type="radio" name="gradSemester" value="Sp26" required> Spring 2026</label>
+                            <label><input type="radio" name="gradSemester" value="Fa26" required> Fall 2026</label>
+                            <label><input type="radio" name="gradSemester" value="Sp27" required> Spring 2027</label>
+                            <label><input type="radio" name="gradSemester" value="Fa27" required> Fall 2027</label>
+                            <label><input type="radio" name="gradSemester" value="Sp28" required> Spring 2028</label>
+                            <label><input type="radio" name="gradSemester" value="Fa28" required> Fall 2028</label>
+                            <label><input type="radio" name="gradSemester" value="Sp29" required> Spring 2029</label>
+                            <label><input type="radio" name="gradSemester" value="other" required> Other</label>
+                        </div>
+                        <input type="text" id="otherGradSemester" name="otherGradSemester" placeholder="If Other, please specify">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>What is your gender? *</label>
+                        <div class="radio-options">
+                            <label><input type="radio" name="gender" value="Female" required> Female</label>
+                            <label><input type="radio" name="gender" value="Male" required> Male</label>
+                            <label><input type="radio" name="gender" value="PreferNotToSay" required> Prefer not to say</label>
+                            <label><input type="radio" name="gender" value="other" required> Other</label>
+                        </div>
+                        <input type="text" id="otherGender" name="otherGender" placeholder="If Other, please specify">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Are you Hispanic/Latino? *</label>
+                        <div class="radio-options">
+                            <label><input type="radio" name="hispanic" value="Yes" required> Yes</label>
+                            <label><input type="radio" name="hispanic" value="No" required> No</label>
+                            <label><input type="radio" name="hispanic" value="PreferNotToSay" required> Prefer not to say</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>What is your Race/Ethnicity? *</label>
+                        <div class="radio-options">
+                            <label><input type="radio" name="race" value="NativeAmerican" required> Native American or Alaska Native</label>
+                            <label><input type="radio" name="race" value="Asian" required> Asian</label>
+                            <label><input type="radio" name="race" value="Black" required> Black or African American</label>
+                            <label><input type="radio" name="race" value="PacificIslander" required> Native Hawaiian or Other Pacific Islander</label>
+                            <label><input type="radio" name="race" value="White" required> White</label>
+                            <label><input type="radio" name="race" value="MultiRacial" required> Two or more races</label>
+                            <label><input type="radio" name="race" value="PreferNotToSay" required> Prefer not to say</label>
+                            <label><input type="radio" name="race" value="other" required> Other</label>
+                        </div>
+                        <input type="text" id="otherRace" name="otherRace" placeholder="If Other, please specify">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="referral">Where did you find out about RAS?</label>
+                        <textarea id="referral" name="referral" rows="2"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Submit</button>
+                </form>
+            </div>
+
+            <div id="activitySection" class="activity-section">
+                <h3>Log an Activity</h3>
+                <div class="activity-info">
+                    <p>Select the activity you participated in:</p>
+                </div>
+
+                <div class="activity-buttons">
+                    <!-- Activity buttons will be generated by JavaScript -->
+                </div>
+
+                <!-- Sub-options will be dynamically generated here -->
+                
+                <button id="logActivityButton" class="submit-btn disabled" disabled>Log Activity</button>
+            </div>
+
+            <div id="shopSection" class="shop-section">
+                <h3>RAS Store</h3>
+                <div id="shopTableContainer"></div>
+                
+                <div class="shop-summary">
+                    <div class="total-amount">Total: $<span id="totalAmount">0.00</span></div>
+                    <button id="checkoutBtn" class="checkout-btn">Checkout</button>
+                </div>
+            </div>
+
+            </div> <!-- Close contentAfterEid div -->
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; Robotics and Automation Society</p>
+    </footer>
+
+    <!-- Import the scripts as modules -->
+    <script src="script.js" type="module"></script>
+</body>
+</html>
