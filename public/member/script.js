@@ -45,8 +45,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to process EID if already present on load
     function processExistingEid() {
         const eidInput = document.getElementById('eid');
-        if (eidInput && eidInput.value && eidInput.value.trim() !== '') {
-            // Trigger the blur event to process the EID
+        if (!eidInput) return;
+
+        // Try to restore saved EID from localStorage
+        try {
+            const saved = localStorage.getItem('savedEid');
+            if (saved && saved.trim() !== '') {
+                eidInput.value = saved;
+                // Trigger the blur event to process the EID
+                const event = new Event('blur');
+                eidInput.dispatchEvent(event);
+                return;
+            }
+        } catch (e) {
+            console.warn('Unable to access localStorage to restore EID', e);
+        }
+
+        // Fallback: if the input already has a value (e.g., prefilled), process it
+        if (eidInput.value && eidInput.value.trim() !== '') {
             const event = new Event('blur');
             eidInput.dispatchEvent(event);
         }
@@ -74,6 +90,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (eid === '') {
                 statusElement.textContent = '';
                 statusElement.className = 'status-message';
+                // Clear saved EID info from localStorage
+                try {
+                    localStorage.removeItem('savedEid');
+                    localStorage.removeItem('savedEidMemberExists');
+                } catch (e) {
+                    console.warn('Unable to clear localStorage for EID', e);
+                }
                 return;
             }
             
@@ -87,12 +110,33 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 // EID format is valid, proceed with checking if it exists
                 const memberExists = await fetchMemberInfo(eid);
+
+                // Persist EID and membership-exists flag so we can restore them on next load
+                try {
+                    localStorage.setItem('savedEid', eid);
+                    localStorage.setItem('savedEidMemberExists', memberExists ? '1' : '0');
+                } catch (e) {
+                    console.warn('Unable to save EID to localStorage', e);
+                }
                 
                 // Only if EID is valid, show the content
                 contentAfterEid.classList.remove('hidden-until-eid');
                 
                 // Handle form visibility based on member existence
                 handleFormVisibility(memberExists, eid);
+
+                // If we have restored a saved membership flag, ensure form visibility matches it
+                try {
+                    const savedFlag = localStorage.getItem('savedEidMemberExists');
+                    if (savedFlag !== null) {
+                        // If savedFlag differs from memberExists, update it to reflect current state
+                        if ((savedFlag === '1') !== Boolean(memberExists)) {
+                            localStorage.setItem('savedEidMemberExists', memberExists ? '1' : '0');
+                        }
+                    }
+                } catch (e) {
+                    // ignore
+                }
                 
                 // Regenerate the shop table to show purchase history for this EID
                 const shopTableContainer = document.getElementById('shopTableContainer');
@@ -129,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Show validation message while typing
             if (!isValidEid(eid)) {
-                statusElement.textContent = 'EID should be 2-3 lowercase letters followed by 3-8 numbers';
+                statusElement.textContent = 'EID should be 2-3 letters followed by 3-8 numbers';
                 statusElement.className = 'status-message warning';
             } else {
                 statusElement.textContent = 'Valid EID format. Click/tab out to check membership.';

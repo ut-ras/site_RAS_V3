@@ -12,35 +12,76 @@ export const HCB_BASE_URL = 'https://hcb.hackclub.com/donations/start/austin-iee
 
 // IRL-only shop items (snacks, etc)
 export const irlShopItems = [
+    // Drinks
     {
-        id: "caprisun",
-        name: "CapriSun",
+        id: "drinks",
+        name: "Drinks (Capri Sun, Soda)",
+        price: 100,
+    },
+    
+    {
+        id: "drinks",
+        name: "Celcius",
+        price: 150,
+    },
+    // Snack Packs
+    {
+        id: "smallsnacks",
+        name: "Fruit Snacks/Rice Krispies)",
         price: 50,
     },
+    
+    // Chips
     {
-        id: "poptart",
-        name: "PopTart",
-        price: 50,
+        id: "chips",
+        name: "Chips",
+        price: 100,
+    },
+    
+    // Candy
+    {
+        id: "candy",
+        name: "Candy (Twix, M&Ms, Snickers, Sour Patch, Airhead)",
+        price: 150,
+    },
+    
+    // Microwaveable Foods
+    {
+        id: "popcorn",
+        name: "Popcorn",
+        price: 100,
     },
     {
-        id: "shirtXSpost",
+        id: "microwavemeals",
+        name: "Microwave Meals (Ramen/Mac and Cheese)",
+        price: 150,
+    },
+    
+    // Pop Tarts
+    {
+        id: "poptarts",
+        name: "Pop Tarts",
+        price: 100,
+    },
+    {
+        id: "shirtXS",
         name: "Shirt (Overstock) XS",
         price: 1500,
     },
     {
-        id: "shirtSpost",
+        id: "shirtS",
         name: "Shirt (Overstock) S",
     },
     {
-        id: "shirtMpost",
+        id: "shirtM",
         name: "Shirt (Overstock) M"
     },
     {
-        id: "shirtLpost",
+        id: "shirtL",
         name: "Shirt (Overstock) L"
     },
     {
-        id: "shirtXLpost",
+        id: "shirtXL",
         name: "Shirt (Overstock) XL"
     },
 ];
