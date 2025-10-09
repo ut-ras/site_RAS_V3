@@ -13,25 +13,35 @@ export const HCB_BASE_URL = 'https://hcb.hackclub.com/donations/start/austin-iee
 // IRL-only shop items (snacks, etc)
 export const irlShopItems = [
     {
-        id: "shirtXS",
-        name: "Shirt - XS",
+        id: "caprisun",
+        name: "CapriSun",
+        price: 50,
+    },
+    {
+        id: "poptart",
+        name: "PopTart",
+        price: 50,
+    },
+    {
+        id: "shirtXSpost",
+        name: "Shirt (Overstock) XS",
         price: 1500,
     },
     {
-        id: "shirtS",
-        name: "Shirt - S",
+        id: "shirtSpost",
+        name: "Shirt (Overstock) S",
     },
     {
-        id: "shirtM",
-        name: "Shirt - M"
+        id: "shirtMpost",
+        name: "Shirt (Overstock) M"
     },
     {
-        id: "shirtL",
-        name: "Shirt - L"
+        id: "shirtLpost",
+        name: "Shirt (Overstock) L"
     },
     {
-        id: "shirtXL",
-        name: "Shirt - XL"
+        id: "shirtXLpost",
+        name: "Shirt (Overstock) XL"
     },
 ];
 
