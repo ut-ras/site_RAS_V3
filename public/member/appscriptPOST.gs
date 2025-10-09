@@ -130,15 +130,90 @@ function appendDataToSheet(data, sheetName) {
 }
 
 /**
- * Handle GET requests - can be used for testing
+ * Handle GET requests - provides filtered PublishedPayments data as CSV when given an EID
+ * @param {Object} e - The event object containing query parameters
  */
-function doGet() {
-  return ContentService.createTextOutput(
-    JSON.stringify({
-      'status': 'success',
-      'message': 'The API is running. Please use POST to submit data.'
-    })
-  ).setMimeType(ContentService.MimeType.JSON);
+function doGet(e) {
+  try {
+    // Check if EID query parameter is provided
+    if (!e || !e.parameter || !e.parameter.eid) {
+      return ContentService.createTextOutput(
+        JSON.stringify({
+          'status': 'error',
+          'message': 'Missing required query parameter: eid'
+        })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const eid = e.parameter.eid.toLowerCase().trim();
+    
+    // Get the PublishedPayments sheet
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('PublishedPayments');
+    
+    if (!sheet) {
+      return ContentService.createTextOutput(
+        JSON.stringify({
+          'status': 'error',
+          'message': 'PublishedPayments sheet not found'
+        })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Get all data from the sheet
+    const data = sheet.getDataRange().getValues();
+    
+    // Filter rows that contain the given EID in any cell
+    const filteredRows = data.filter((row, index) => {
+      if (index === 0) return true; // Keep headers
+      
+      // Check if any cell in the row contains the EID
+      return row.some(cell => {
+        if (cell === null || cell === undefined) return false;
+        return cell.toString().toLowerCase().trim().includes(eid);
+      });
+    });
+    
+    // Convert filtered data to CSV
+    if (filteredRows.length <= 1) { // Only headers or nothing
+      return ContentService.createTextOutput(
+        JSON.stringify({
+          'status': 'success',
+          'message': 'No records found for the provided EID',
+          'eid': eid
+        })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Convert to CSV
+    const csv = filteredRows.map(row => 
+      row.map(cell => {
+        // Handle special characters and ensure proper CSV formatting
+        if (cell === null || cell === undefined) return '';
+        
+        const cellStr = cell.toString();
+        // If cell contains comma, quote, or newline, wrap in quotes and escape quotes
+        if (cellStr.includes(',') || cellStr.includes('"') || cellStr.includes('\n')) {
+          return '"' + cellStr.replace(/"/g, '""') + '"';
+        }
+        return cellStr;
+      }).join(',')
+    ).join('\n');
+    
+    // Return as CSV
+    return ContentService.createTextOutput(csv)
+      .setMimeType(ContentService.MimeType.CSV)
+      .downloadAsFile(`payments_${eid}.csv`);
+  
+  } catch (error) {
+    // Return error response
+    return ContentService.createTextOutput(
+      JSON.stringify({
+        'status': 'error',
+        'message': `Error processing request: ${error.message}`
+      })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 /**

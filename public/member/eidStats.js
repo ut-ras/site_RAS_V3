@@ -3,31 +3,37 @@
  * Functions for handling EID lookups and membership data
  */
 
-import { MEMBERSHIP_CSV_URL } from './constants.js';
+import { MEMBERSHIP_CSV_URL, GOOGLE_APPS_SCRIPT_URL } from './constants.js';
 
 // Store membership data globally
 let membershipRows = null;
 // Store purchases by EID
 let purchasesByEid = new Map();
+// Store the current EID
+let currentEid = null;
+
+// Initialize module - auto-load saved EID on script load
+initializeModule();
 
 /**
- * Function to load membership data once
+ * Function to load membership data from Apps Script
+ * @param {string} eid - EID to fetch data for
  * @returns {Promise<boolean>} - Promise resolving to true if data was loaded successfully
  */
-export async function loadMembershipData() {
+export async function loadMembershipData(eid) {
     try {
-        const response = await fetch(MEMBERSHIP_CSV_URL);
-        if (!response.ok) {
-            throw new Error('Failed to fetch membership data');
+        const result = await fetchDataFromAppsScript(GOOGLE_APPS_SCRIPT_URL, eid);
+        
+        if (result.success && result.format === 'csv') {
+            membershipRows = result.data;
+            
+            // Parse purchase information if it exists in the data
+            if (membershipRows.length > 0) {
+                parsePurchaseData(membershipRows);
+            }
+            return true;
         }
-        
-        const csvText = await response.text();
-        membershipRows = parseCSV(csvText);
-        
-        // Parse purchase information from column 3 (index 2)
-        parsePurchaseData(membershipRows);
-        
-        return true;
+        return false;
     } catch (error) {
         console.error('Error loading membership data:', error);
         return false;
@@ -95,53 +101,41 @@ export async function fetchMemberInfo(eid) {
         return false;
     }
     
-    // Display loading status
+    // Get status element
     const statusElement = document.getElementById('eidStatus');
-    statusElement.textContent = 'Checking membership...';
-    statusElement.className = 'status-message loading';
-    
-    // Normalize the EID for comparison (to lowercase)
-    const normalizedEid = eid.trim().toLowerCase();
+    if (statusElement) {
+        statusElement.textContent = 'Checking membership...';
+        statusElement.className = 'status-message loading';
+    }
     
     try {
-        // Make sure membership data is loaded
-        if (!membershipRows) {
-            statusElement.textContent = 'Loading membership data...';
-            const dataLoaded = await loadMembershipData();
-            if (!dataLoaded) {
-                throw new Error('Failed to load membership data');
-            }
+        // Load membership data directly using shared fetchDataFromAppsScript function
+        const dataLoaded = await loadMembershipData(eid);
+        if (!dataLoaded) {
+            throw new Error('Failed to load membership data');
         }
         
-        // Use the already loaded membership data
-        const rows = membershipRows;
+        // Check if any data was returned
+        const memberExists = membershipRows && membershipRows.length > 1; // More than just headers
         
-        // Check if the EID exists in the first column
-        // We assume the first row contains headers and the first column contains EIDs
-        let memberExists = false;
-        
-        // Skip the header row (index 0) and check remaining rows
-        for (let i = 1; i < rows.length; i++) {
-            if (rows[i].length > 0 && rows[i][0].toLowerCase() === normalizedEid) {
-                memberExists = true;
-                break;
+        // Update the status message if element exists
+        if (statusElement) {
+            if (memberExists) {
+                statusElement.textContent = 'Welcome back! Your membership is active.';
+                statusElement.className = 'status-message success';
+            } else {
+                statusElement.textContent = 'No membership found. Please fill out the form below.';
+                statusElement.className = 'status-message warning';
             }
-        }
-        
-        // Update the status message
-        if (memberExists) {
-            statusElement.textContent = 'Welcome back! Your membership is active.';
-            statusElement.className = 'status-message success';
-        } else {
-            statusElement.textContent = 'No membership found. Please fill out the form below.';
-            statusElement.className = 'status-message warning';
         }
         
         return memberExists;
     } catch (error) {
         console.error('Error fetching member info:', error);
-        statusElement.textContent = 'Error checking membership. Please try again.';
-        statusElement.className = 'status-message error';
+        if (statusElement) {
+            statusElement.textContent = 'Error checking membership. Please try again.';
+            statusElement.className = 'status-message error';
+        }
         return false;
     }
 }
@@ -198,4 +192,166 @@ export function getPurchasesByEid(eid) {
  */
 export function isMembershipDataLoaded() {
     return membershipRows !== null;
+}
+
+/**
+ * Get the current EID that was loaded
+ * @returns {string|null} - Current EID or null if none
+ */
+export function getCurrentEid() {
+    return currentEid;
+}
+
+/**
+ * Save EID to localStorage for future use
+ * @param {string} eid - EID to save
+ * @param {boolean} memberExists - Whether the member exists
+ */
+export function saveEidToStorage(eid, memberExists) {
+    if (!eid) return;
+    
+    try {
+        localStorage.setItem('savedEid', eid.trim().toLowerCase());
+        localStorage.setItem('savedEidMemberExists', memberExists ? '1' : '0');
+        // Update current EID
+        currentEid = eid.trim().toLowerCase();
+    } catch (e) {
+        console.warn('Unable to save EID to localStorage', e);
+    }
+}
+
+/**
+ * Clear saved EID from localStorage
+ */
+export function clearSavedEid() {
+    try {
+        localStorage.removeItem('savedEid');
+        localStorage.removeItem('savedEidMemberExists');
+        currentEid = null;
+    } catch (e) {
+        console.warn('Unable to clear localStorage for EID', e);
+    }
+}
+
+/**
+ * Initialize the module and auto-load saved EID if available
+ */
+function initializeModule() {
+    // Run this once when the script is loaded
+    try {
+        const savedEid = localStorage.getItem('savedEid');
+        if (savedEid && savedEid.trim() !== '') {
+            currentEid = savedEid.trim().toLowerCase();
+            console.log(`Found saved EID: ${currentEid}, will auto-load data`);
+            
+            // Use setTimeout to ensure this runs after the DOM is ready
+            setTimeout(() => {
+                loadMembershipData(currentEid).then(success => {
+                    if (success) {
+                        console.log(`Auto-loaded membership data for ${currentEid}`);
+                        // Dispatch a custom event that other scripts can listen for
+                        document.dispatchEvent(new CustomEvent('eidDataLoaded', { 
+                            detail: { 
+                                eid: currentEid,
+                                success: true 
+                            }
+                        }));
+                    }
+                });
+            }, 0);
+        }
+    } catch (e) {
+        console.warn('Unable to auto-load EID from localStorage', e);
+    }
+}
+
+/**
+ * Fetch data from arbitrary Apps Script URL with EID parameter
+ * @param {string} url - The Apps Script URL to fetch from
+ * @param {string} eid - The EID to fetch data for
+ * @param {string} [statusElementId='dataStatus'] - ID of status element to update
+ * @returns {Promise<Object>} - Promise resolving to the response data
+ */
+export async function fetchDataFromAppsScript(url, eid, statusElementId = 'dataStatus') {
+    if (!url || !eid) {
+        throw new Error('URL and EID are required');
+    }
+    
+    // Get status element if ID provided
+    const statusElement = statusElementId ? document.getElementById(statusElementId) : null;
+    
+    // Update status if element exists
+    if (statusElement) {
+        statusElement.textContent = 'Loading data...';
+        statusElement.className = 'status-message loading';
+    }
+    
+    try {
+        // Construct URL with EID parameter
+        const fullUrl = new URL(url);
+        fullUrl.searchParams.set('eid', eid.trim().toLowerCase());
+        
+        console.log(`Fetching data from: ${fullUrl.toString()}`);
+        
+        // Make the fetch request
+        const response = await fetch(fullUrl.toString());
+        if (!response.ok) {
+            throw new Error('Failed to fetch data');
+        }
+        
+        // Check if response is CSV (based on Content-Type header)
+        const contentType = response.headers.get('Content-Type') || '';
+        
+        if (contentType.includes('text/csv')) {
+            // Handle CSV response
+            const csvText = await response.text();
+            const parsedData = parseCSV(csvText);
+            
+            // Update status if element exists
+            if (statusElement) {
+                statusElement.textContent = 'Data loaded successfully!';
+                statusElement.className = 'status-message success';
+            }
+            
+            return {
+                success: true,
+                format: 'csv',
+                data: parsedData
+            };
+        } else {
+            // Handle JSON response
+            const jsonData = await response.json();
+            
+            // Update status based on response
+            if (statusElement) {
+                if (jsonData.status === 'success') {
+                    statusElement.textContent = jsonData.message || 'Data loaded successfully!';
+                    statusElement.className = 'status-message success';
+                } else {
+                    statusElement.textContent = jsonData.message || 'No data found.';
+                    statusElement.className = 'status-message warning';
+                }
+            }
+            
+            return {
+                success: jsonData.status === 'success',
+                format: 'json',
+                data: jsonData
+            };
+        }
+    } catch (error) {
+        console.error('Error fetching data from Apps Script:', error);
+        
+        // Update status element if it exists
+        if (statusElement) {
+            statusElement.textContent = 'Error loading data. Please try again.';
+            statusElement.className = 'status-message error';
+        }
+        
+        return {
+            success: false,
+            format: 'error',
+            error: error.message
+        };
+    }
 }

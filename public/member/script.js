@@ -7,7 +7,7 @@
 // Import constants from constants.js
 import { MEMBERSHIP_CSV_URL } from './constants.js';
 // Import EID related functions from eidStats.js
-import { loadMembershipData, fetchMemberInfo } from './eidStats.js';
+import { loadMembershipData, fetchMemberInfo, saveEidToStorage, clearSavedEid, getCurrentEid } from './eidStats.js';
 // Import shopping related functions from shopFunctions.js
 import { initShopFunctionality, generateShopTable, updateTotal } from './shopFunctions.js';
 // Import membership form related functions
@@ -22,17 +22,19 @@ import { postToAppsScript } from './apiService.js';
 // EID related functions are now imported from eidStats.js
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Load membership data when the page loads
-    loadMembershipData().then(success => {
-        if (success) {
-            console.log('Membership data loaded successfully');
+    // We no longer need to load membership data here as eidStats.js does it automatically
+    // Instead, listen for the eidDataLoaded event
+    document.addEventListener('eidDataLoaded', function(event) {
+        if (event.detail && event.detail.success) {
+            console.log('Membership data auto-loaded successfully for:', event.detail.eid);
             
-            // After membership data is loaded, check if EID is already entered
+            // Process EID field if it exists on the page
             processExistingEid();
-        } else {
-            console.error('Failed to preload membership data');
         }
     });
+    
+    // Still process existing EID in case it wasn't auto-loaded
+    processExistingEid();
     
     // Get URL parameters for activity selection
     const urlParams = new URLSearchParams(window.location.search);
@@ -47,18 +49,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const eidInput = document.getElementById('eid');
         if (!eidInput) return;
 
-        // Try to restore saved EID from localStorage
-        try {
-            const saved = localStorage.getItem('savedEid');
-            if (saved && saved.trim() !== '') {
-                eidInput.value = saved;
-                // Trigger the blur event to process the EID
-                const event = new Event('blur');
-                eidInput.dispatchEvent(event);
-                return;
-            }
-        } catch (e) {
-            console.warn('Unable to access localStorage to restore EID', e);
+        // Try to restore saved EID using our centralized getCurrentEid function
+        const saved = getCurrentEid();
+        if (saved && saved.trim() !== '') {
+            eidInput.value = saved;
+            // Trigger the blur event to process the EID
+            const event = new Event('blur');
+            eidInput.dispatchEvent(event);
+            return;
         }
 
         // Fallback: if the input already has a value (e.g., prefilled), process it
@@ -90,13 +88,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (eid === '') {
                 statusElement.textContent = '';
                 statusElement.className = 'status-message';
-                // Clear saved EID info from localStorage
-                try {
-                    localStorage.removeItem('savedEid');
-                    localStorage.removeItem('savedEidMemberExists');
-                } catch (e) {
-                    console.warn('Unable to clear localStorage for EID', e);
-                }
+                // Clear saved EID info using our centralized function
+                clearSavedEid();
                 return;
             }
             
@@ -111,13 +104,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // EID format is valid, proceed with checking if it exists
                 const memberExists = await fetchMemberInfo(eid);
 
-                // Persist EID and membership-exists flag so we can restore them on next load
-                try {
-                    localStorage.setItem('savedEid', eid);
-                    localStorage.setItem('savedEidMemberExists', memberExists ? '1' : '0');
-                } catch (e) {
-                    console.warn('Unable to save EID to localStorage', e);
-                }
+                // Persist EID and membership-exists flag using our centralized function
+                saveEidToStorage(eid, memberExists);
                 
                 // Only if EID is valid, show the content
                 contentAfterEid.classList.remove('hidden-until-eid');
