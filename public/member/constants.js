@@ -16,52 +16,52 @@ export const irlShopItems = [
     {
         id: "drinks",
         name: "Drinks (Capri Sun, Soda)",
-        price: 100,
+        price: 108,
     },
     
     {
         id: "drinks",
         name: "Celcius",
-        price: 150,
+        price: 161,
     },
     // Snack Packs
     {
         id: "smallsnacks",
         name: "Fruit Snacks/Rice Krispies)",
-        price: 50,
+        price: 54,
     },
     
     // Chips
     {
         id: "chips",
         name: "Chips",
-        price: 100,
+        price: 108,
     },
     
     // Candy
     {
         id: "candy",
         name: "Candy (Twix, M&Ms, Snickers, Sour Patch, Airhead)",
-        price: 150,
+        price: 161,
     },
     
     // Microwaveable Foods
     {
         id: "popcorn",
         name: "Popcorn",
-        price: 100,
+        price: 108,
     },
     {
         id: "microwavemeals",
         name: "Microwave Meals (Ramen/Mac and Cheese)",
-        price: 150,
+        price: 161,
     },
     
     // Pop Tarts
     {
         id: "poptarts",
         name: "Pop Tarts",
-        price: 100,
+        price: 108,
     },
     {
         id: "shirtXS",
@@ -134,6 +134,6 @@ export const activityData = {
     "VexU": [],
     "BusinessOrAdvertising": [],
     "LM": [],
-    "VolunteerTabling": [],
+    "Volunteer": [],
     "Other": []
 };

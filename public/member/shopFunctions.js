@@ -6,12 +6,19 @@
 import { shopItems, irlShopItems, HCB_BASE_URL } from './constants.js';
 import { getPurchasesByEid } from './eidStats.js';
 
+// Track current shop mode globally
+let currentShopMode = 'regular';
+
 /**
  * Initialize shop functionality
  */
 export function initShopFunctionality() {
+    // Check if we're in IRL mode from URL
+    const searchParams = new URLSearchParams(window.location.search);
+    currentShopMode = searchParams.get('irl') === '1' ? 'irl' : 'regular';
+    
     // Generate the shop table
-    generateShopTable();
+    generateShopTable(currentShopMode);
     
     // Add event listener to checkout button
     const checkoutBtn = document.getElementById('checkoutBtn');
@@ -59,20 +66,73 @@ export function processShopItems(itemsArray = shopItems) {
 }
 
 /**
- * Generate shop table from items array
+ * Switch between shop types (IRL vs Regular) without page reload
+ * @param {string} mode - The shop mode to switch to ('irl' or 'regular')
  */
-export function generateShopTable() {
+export function switchShopType(mode) {
+    // Show a brief loading message
+    const container = document.getElementById('shopTableContainer');
+    if (container) {
+        const loadingMsg = document.createElement('div');
+        loadingMsg.textContent = 'Loading...';
+        loadingMsg.style.padding = '10px';
+        loadingMsg.style.textAlign = 'center';
+        container.innerHTML = '';
+        container.appendChild(loadingMsg);
+    }
+    
+    // Small delay to allow UI update
+    setTimeout(() => {
+        // Update current shop mode
+        currentShopMode = mode === 'irl' ? 'irl' : 'regular';
+        
+        // Update URL without reloading the page
+        const url = new URL(window.location);
+        if (currentShopMode === 'irl') {
+            url.searchParams.set('irl', '1');
+        } else {
+            url.searchParams.set('irl', '0');
+        }
+        window.history.pushState({}, '', url);
+        
+        // Clear existing table
+        if (container) {
+            container.innerHTML = '';
+        }
+        
+        // Regenerate the shop table with the new mode
+        generateShopTable(currentShopMode);
+        
+        // Recalculate total
+        updateTotal();
+    }, 100); // Short delay for better user experience
+}
+
+/**
+ * Generate shop table from items array
+ * @param {string} mode - The shop mode ('irl' or 'regular')
+ */
+export function generateShopTable(mode = null) {
     const container = document.getElementById('shopTableContainer');
     if (!container) return;
     
-    // Check if we're in IRL mode
-    const isIrlMode = new URLSearchParams(window.location.search).has('irl');
+    // If mode is not provided, use the current shop mode or determine from URL
+    if (mode === null) {
+        const searchParams = new URLSearchParams(window.location.search);
+        mode = searchParams.get('irl') === '1' ? 'irl' : 'regular';
+        currentShopMode = mode;
+    }
+    
+    const isIrlMode = mode === 'irl';
     
     // Get the items to display based on mode
-    let itemsToProcess = [...shopItems]; // Make a copy of the array
+    let itemsToProcess = [];
     if (isIrlMode) {
-        // In IRL mode, show IRL items first, then regular items
-        itemsToProcess = [...irlShopItems, ...shopItems];
+        // In IRL mode, show ONLY IRL items
+        itemsToProcess = [...irlShopItems];
+    } else {
+        // In regular mode, show ONLY regular shop items
+        itemsToProcess = [...shopItems];
     }
     
     // Process items to propagate values
@@ -179,18 +239,32 @@ export function generateShopTable() {
     table.appendChild(tbody);
     container.appendChild(table);
     
-    // Add "Snack Shop" link if we're NOT already in IRL mode
-    if (!isIrlMode) {
-        const snackShopLink = document.createElement('a');
-        snackShopLink.href = window.location.pathname + '?irl=1';
-        snackShopLink.textContent = 'Snack Shop';
-        snackShopLink.style.color = '#0066cc';
-        snackShopLink.style.textDecoration = 'underline';
-        snackShopLink.style.display = 'inline-block';
-        snackShopLink.style.marginTop = '10px';
-        snackShopLink.style.fontSize = '0.9em';
-        container.appendChild(snackShopLink);
+    // Add shop switch link
+    const shopSwitchLink = document.createElement('a');
+    shopSwitchLink.href = '#'; // Use # to prevent page navigation
+    
+    if (isIrlMode) {
+        shopSwitchLink.textContent = 'Switch to Online Shop';
+        shopSwitchLink.setAttribute('data-target-mode', 'regular');
+    } else {
+        shopSwitchLink.textContent = 'Switch to Snack Shop';
+        shopSwitchLink.setAttribute('data-target-mode', 'irl');
     }
+    
+    // Add click event listener to switch shop type without page reload
+    shopSwitchLink.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent the default link behavior
+        const targetMode = this.getAttribute('data-target-mode');
+        switchShopType(targetMode);
+    });
+    
+    shopSwitchLink.style.color = '#0066cc';
+    shopSwitchLink.style.textDecoration = 'underline';
+    shopSwitchLink.style.display = 'inline-block';
+    shopSwitchLink.style.marginTop = '10px';
+    shopSwitchLink.style.fontSize = '0.9em';
+    shopSwitchLink.style.cursor = 'pointer';
+    container.appendChild(shopSwitchLink);
 }
 
 /**

@@ -13,6 +13,9 @@ import { GOOGLE_APPS_SCRIPT_URL } from './constants.js';
  * @returns {Promise} - Promise representing the fetch request
  */
 export function postToAppsScript(data, onSuccess = null, onError = null) {
+    // Log data being sent to the API for debugging
+    console.log('Sending data to Google Apps Script:', data);
+    
     return fetch(GOOGLE_APPS_SCRIPT_URL, {
         method: 'POST',
         headers: {

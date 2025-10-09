@@ -59,8 +59,14 @@ function setupFormSubmissionHandler() {
                 'TYPE': 'MEMBERSHIP' // Default type for membership form
             };
             
+            // Log form data for debugging
+            console.log("Form data before processing:", Object.fromEntries(formData));
+            
             // Process all form fields
             processFormFields(memberForm, data);
+            
+            // Log processed data
+            console.log("Processed data being submitted:", data);
             
             // Submit data to Google Apps Script
             submitMembershipForm(memberForm, data, submitButton, originalButtonText);
@@ -96,9 +102,17 @@ function processFormFields(form, data) {
             return;
         }
         
-        // Handle radio buttons - only process if checked
-        if (element.type === 'radio' && !element.checked) {
-            return;
+        // Handle radio buttons 
+        if (element.type === 'radio') {
+            // Only process checked radio buttons
+            if (element.checked) {
+                // If value is not 'other', add it to the data object
+                if (element.value !== 'other') {
+                    data[fieldName] = element.value;
+                }
+                // 'other' values will be handled separately below
+            }
+            return; // Skip further processing for radio buttons
         }
         
         // Skip text inputs that are part of "other" options (will be processed later)
@@ -106,8 +120,8 @@ function processFormFields(form, data) {
             return;
         }
         
-        // Standard field processing for non-other fields
-        if (element.type !== 'radio' && element.type !== 'checkbox') {
+        // Standard field processing for non-radio and non-checkbox fields
+        if (element.type !== 'checkbox') {
             if (element.value.trim() !== '' || element.required) {
                 data[fieldName] = element.value;
             }
