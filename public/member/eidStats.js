@@ -115,8 +115,8 @@ export async function fetchMemberInfo(eid) {
             throw new Error('Failed to load membership data');
         }
         
-        // Check if any data was returned
-        const memberExists = membershipRows && membershipRows.length > 1; // More than just headers
+        // Use the checkMemberExists helper to determine if the member exists
+        const memberExists = checkMemberExists(eid);
         
         // Update the status message if element exists
         if (statusElement) {
@@ -187,6 +187,31 @@ export function getPurchasesByEid(eid) {
 }
 
 /**
+ * Check if a member with the given EID exists in the loaded data
+ * @param {string} eid - The EID to check
+ * @returns {boolean} - True if the member exists
+ */
+export function checkMemberExists(eid) {
+    // If no data loaded or no EID provided, return false
+    if (!membershipRows || !eid) return false;
+    
+    // Normalize the search EID
+    const normalizedSearchEid = eid.trim().toLowerCase();
+    
+    // Check if there's an EID match in the first column
+    for (let i = 1; i < membershipRows.length; i++) {
+        if (membershipRows[i].length > 0) {
+            const rowEid = membershipRows[i][0].trim().toLowerCase();
+            if (rowEid === normalizedSearchEid) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+/**
  * Check if membership data is loaded
  * @returns {boolean} - True if data is loaded
  */
@@ -248,12 +273,17 @@ function initializeModule() {
             setTimeout(() => {
                 loadMembershipData(currentEid).then(success => {
                     if (success) {
-                        console.log(`Auto-loaded membership data for ${currentEid}`);
+                        // Check if member truly exists by exact EID match
+                        const memberExists = checkMemberExists(currentEid);
+                        
+                        console.log(`Auto-loaded membership data for ${currentEid}, member exists: ${memberExists}`);
+                        
                         // Dispatch a custom event that other scripts can listen for
                         document.dispatchEvent(new CustomEvent('eidDataLoaded', { 
                             detail: { 
                                 eid: currentEid,
-                                success: true 
+                                success: true,
+                                memberExists: memberExists
                             }
                         }));
                     }
