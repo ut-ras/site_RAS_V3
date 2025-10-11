@@ -324,7 +324,6 @@ input { padding: .55rem; box-sizing: border-box; margin-top: .6rem; }
 }
 
 .form-group input {
-  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;

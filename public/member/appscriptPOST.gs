@@ -11,6 +11,66 @@
 /**
  * Handle POST requests
  */
+
+/**
+ * Appends data to the specified sheet, creating new columns if needed
+ * 
+ * @param {Object} data - The data object to append
+ * @param {String} sheetName - The name of the sheet to append to
+ * @return {Object} Information about the operation
+ */
+function appendDataToSheet(data, sheetName) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  
+  // Get the sheet - it should exist based on our earlier validation
+  let sheet = ss.getSheetByName(sheetName);
+  
+  // Check if the first cell is empty to determine if headers need to be added
+  const firstCell = sheet.getRange(1, 1).getValue();
+  if (firstCell === '') {
+    // Initialize with default headers if the sheet is empty
+    sheet.appendRow(['TIMESTAMP', 'EID']);
+  }
+  
+  // Get existing headers
+  const headerRange = sheet.getRange(1, 1, 1, sheet.getLastColumn());
+  const headers = headerRange.getValues()[0];
+  
+  // Check for new fields and add headers if needed
+  let updatedHeaders = [...headers];
+  const newHeaders = [];
+  
+  Object.keys(data).forEach(key => {
+    if (!headers.includes(key)) {
+      updatedHeaders.push(key);
+      newHeaders.push(key);
+    }
+  });
+  
+  // If there are new headers, upd//https://script.google.com/macros/s/AKfycbzkHNj7J8ai6G9AFmm373TQqI0o02b9WLVkDJwPvavGOlw7XRTC8kacCEkoeblVPKCB/execate the header row
+  if (newHeaders.length > 0) {
+    // Add new columns
+    sheet.getRange(1, headers.length + 1, 1, newHeaders.length)
+      .setValues([newHeaders]);
+    
+    // Get updated headers
+    const updatedHeaderRange = sheet.getRange(1, 1, 1, sheet.getLastColumn());
+    updatedHeaders = updatedHeaderRange.getValues()[0];
+  }
+  
+  // Prepare row data to match all headers
+  const rowData = updatedHeaders.map(header => data[header] || '');
+  
+  // Append the new row
+  sheet.appendRow(rowData);
+  
+  return {
+    'sheetName': sheetName,
+    'newHeaders': newHeaders,
+    'rowAdded': rowData
+  };
+}
+
 function doPost(e) {
   try {
     // Parse the incoming JSON data

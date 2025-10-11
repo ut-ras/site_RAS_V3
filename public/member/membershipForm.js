@@ -5,6 +5,7 @@
 
 import { GOOGLE_APPS_SCRIPT_URL } from './constants.js';
 import { postToAppsScript } from './apiService.js';
+import { refreshDataInBackground } from './eidStats.js';
 
 /**
  * Initialize membership form functionality
@@ -178,9 +179,19 @@ function submitMembershipForm(form, data, submitButton, originalButtonText) {
             submitButton.disabled = false;
             submitButton.textContent = originalButtonText;
             
+            // Get the EID from the form data
+            const eid = data.EID;
+            
             // Hide the form after successful submission
             setTimeout(() => {
                 form.style.display = 'none';
+                
+                // Refresh EID data after a short delay to allow the server to process the form submission
+                if (eid) {
+                    setTimeout(() => {
+                        refreshDataInBackground(eid);
+                    }, 3000);
+                }
             }, 2000);
         },
         // Error callback

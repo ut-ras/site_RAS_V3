@@ -338,7 +338,7 @@ export function clearSavedEid() {
  * Refresh data in the background
  * @param {string} eid - The EID to refresh data for
  */
-async function refreshDataInBackground(eid) {
+export async function refreshDataInBackground(eid) {
     if (!eid) return;
     
     console.log(`Starting background refresh for EID: ${eid}`);
