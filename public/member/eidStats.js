@@ -262,6 +262,7 @@ export function saveApiResponseToStorage(eid, apiData) {
     
     try {
         // Store the API response data as a JSON string using a single key
+        // Store the raw API data directly without any wrapper
         localStorage.setItem('apiData', JSON.stringify(apiData));
         console.log(`Saved API data to localStorage`);
     } catch (e) {
@@ -276,10 +277,11 @@ export function saveApiResponseToStorage(eid, apiData) {
  */
 export function getSavedApiResponse(eid) {
     try {
-        const savedData = localStorage.getItem('apiData');
-        if (!savedData) return null;
+        const savedDataString = localStorage.getItem('apiData');
+        if (!savedDataString) return null;
         
-        const parsedData = JSON.parse(savedData);
+        // Parse the stored data directly - no format wrapper
+        const parsedData = JSON.parse(savedDataString);
         
         // If eid is provided, verify it matches the stored data's EID
         if (eid && parsedData.eid && 
@@ -332,6 +334,31 @@ export function clearSavedEid() {
 /**
  * Initialize the module and auto-load saved EID if available
  */
+/**
+ * Refresh data in the background
+ * @param {string} eid - The EID to refresh data for
+ */
+async function refreshDataInBackground(eid) {
+    if (!eid) return;
+    
+    console.log(`Starting background refresh for EID: ${eid}`);
+    
+    try {
+        // Make a fresh API call to get updated data
+        const result = await fetchDataFromAppsScript(GOOGLE_APPS_SCRIPT_URL, eid, null); // Pass null for statusElementId to avoid UI updates
+        
+        if (result.success && result.format === 'json') {
+            // Process the API response and update storage
+            processApiResponse(result.data);
+            console.log(`Background refresh completed for EID: ${eid}`);
+        } else {
+            console.warn(`Background refresh failed for EID: ${eid}`);
+        }
+    } catch (error) {
+        console.warn(`Error during background refresh for EID: ${eid}`, error);
+    }
+}
+
 function initializeModule() {
     // Run this once when the script is loaded
     try {
@@ -339,6 +366,7 @@ function initializeModule() {
         const savedApiData = localStorage.getItem('apiData');
         if (savedApiData) {
             try {
+                // Parse the stored data directly - no format wrapper
                 const apiData = JSON.parse(savedApiData);
                 
                 // Check if the API data has an EID
@@ -364,6 +392,12 @@ function initializeModule() {
                                 memberExists: memberExists
                             }
                         }));
+                        
+                        // After loading data from localStorage, refresh it in the background
+                        // Use a short delay to ensure page is rendered first
+                        setTimeout(() => {
+                            refreshDataInBackground(currentEid);
+                        }, 1000);
                     }, 0);
                 }
             } catch (parseError) {
@@ -379,7 +413,7 @@ function initializeModule() {
  * Fetch data from arbitrary Apps Script URL with EID parameter
  * @param {string} url - The Apps Script URL to fetch from
  * @param {string} eid - The EID to fetch data for
- * @param {string} [statusElementId='dataStatus'] - ID of status element to update
+ * @param {string|null} [statusElementId='dataStatus'] - ID of status element to update, or null to skip UI updates
  * @returns {Promise<Object>} - Promise resolving to the response data
  */
 export async function fetchDataFromAppsScript(url, eid, statusElementId = 'dataStatus') {
@@ -390,8 +424,8 @@ export async function fetchDataFromAppsScript(url, eid, statusElementId = 'dataS
     // Get status element if ID provided
     const statusElement = statusElementId ? document.getElementById(statusElementId) : null;
     
-    // Update status if element exists
-    if (statusElement) {
+    // Update status if element exists and statusElementId is not null
+    if (statusElement && statusElementId !== null) {
         statusElement.textContent = 'Loading data...';
         statusElement.className = 'status-message loading';
     }
@@ -422,8 +456,8 @@ export async function fetchDataFromAppsScript(url, eid, statusElementId = 'dataS
                 // Save API response to localStorage
                 saveApiResponseToStorage(eid, jsonData);
                 
-                // Update status if element exists
-                if (statusElement) {
+                // Update status if element exists and statusElementId is not null
+                if (statusElement && statusElementId !== null) {
                     statusElement.textContent = 'Data loaded successfully!';
                     statusElement.className = 'status-message success';
                 }
@@ -443,8 +477,8 @@ export async function fetchDataFromAppsScript(url, eid, statusElementId = 'dataS
     } catch (error) {
         console.error('Error fetching data from Apps Script:', error);
         
-        // Update status element if it exists
-        if (statusElement) {
+        // Update status element if it exists and statusElementId is not null
+        if (statusElement && statusElementId !== null) {
             statusElement.textContent = 'Error loading data. Please try again.';
             statusElement.className = 'status-message error';
         }
