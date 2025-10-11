@@ -5,7 +5,6 @@
  */
 
 // Import constants from constants.js
-import { MEMBERSHIP_CSV_URL } from './constants.js';
 // Import EID related functions from eidStats.js
 import { loadMembershipData, fetchMemberInfo, saveEidToStorage, clearSavedEid, getCurrentEid } from './eidStats.js';
 // Import shopping related functions from shopFunctions.js
@@ -28,11 +27,52 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.detail && event.detail.success) {
             console.log('Membership data auto-loaded successfully for:', event.detail.eid);
             
-            // Process EID field if it exists on the page
-            processExistingEid();
+            // Update the EID input field with the current EID
+            const eidInput = document.getElementById('eid');
+            if (eidInput && event.detail.eid) {
+                eidInput.value = event.detail.eid;
+            }
+            
+            // Update status message
+            const statusElement = document.getElementById('eidStatus');
+            if (statusElement) {
+                if (event.detail.memberExists) {
+                    statusElement.textContent = 'Welcome back! Your membership is active.';
+                    statusElement.className = 'status-message success';
+                } else {
+                    statusElement.textContent = 'No membership found. Please fill out the form below.';
+                    statusElement.className = 'status-message warning';
+                }
+            }
+            
+            // Update UI to show content
+            const contentAfterEid = document.getElementById('contentAfterEid');
+            if (contentAfterEid) {
+                contentAfterEid.classList.remove('hidden-until-eid');
+                
+                // Handle form visibility based on member existence
+                handleFormVisibility(event.detail.memberExists, event.detail.eid);
+                
+                // Generate shop table if needed
+                const shopTableContainer = document.getElementById('shopTableContainer');
+                if (shopTableContainer) {
+                    // Clear existing table
+                    shopTableContainer.innerHTML = '';
+                    // Generate new table with current EID's purchase history
+                    generateShopTable();
+                    // Recalculate total
+                    updateTotal();
+                }
+            }
         }
     });
     
+    // Function to validate EID format - moved outside to be accessible everywhere
+    function isValidEid(eid) {
+        const eidPattern = /^[a-z]{2,3}[0-9]{3,8}$/;
+        return eidPattern.test(eid);
+    }
+
     // Still process existing EID in case it wasn't auto-loaded
     processExistingEid();
     
@@ -53,29 +93,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const saved = getCurrentEid();
         if (saved && saved.trim() !== '') {
             eidInput.value = saved;
-            // Trigger the blur event to process the EID
-            const event = new Event('blur');
-            eidInput.dispatchEvent(event);
-            return;
+            // No longer auto-triggering submission - user must click submit button
         }
 
-        // Fallback: if the input already has a value (e.g., prefilled), process it
+        // Display validation message if there's a value
         if (eidInput.value && eidInput.value.trim() !== '') {
-            const event = new Event('blur');
-            eidInput.dispatchEvent(event);
+            const eid = eidInput.value.trim().toLowerCase();
+            const statusElement = document.getElementById('eidStatus');
+            
+            if (isValidEid(eid)) {
+                statusElement.textContent = 'Valid EID format. Click Submit to check membership.';
+                statusElement.className = 'status-message success';
+            }
         }
     }
     
     // EID input handling
     const eidInput = document.getElementById('eid');
+    const eidSubmitBtn = document.getElementById('eidSubmitBtn');
+    
     if (eidInput) {
-        // Function to validate EID format
-        function isValidEid(eid) {
-            const eidPattern = /^[a-z]{2,3}[0-9]{3,8}$/;
-            return eidPattern.test(eid);
-        }
-        
-        eidInput.addEventListener('blur', async function() {
+        // Function to process EID
+        async function processEid() {
             const eid = eidInput.value.trim().toLowerCase();
             const statusElement = document.getElementById('eidStatus');
             const contentAfterEid = document.getElementById('contentAfterEid');
@@ -113,18 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Handle form visibility based on member existence
                 handleFormVisibility(memberExists, eid);
 
-                // If we have restored a saved membership flag, ensure form visibility matches it
-                try {
-                    const savedFlag = localStorage.getItem('savedEidMemberExists');
-                    if (savedFlag !== null) {
-                        // If savedFlag differs from memberExists, update it to reflect current state
-                        if ((savedFlag === '1') !== Boolean(memberExists)) {
-                            localStorage.setItem('savedEidMemberExists', memberExists ? '1' : '0');
-                        }
-                    }
-                } catch (e) {
-                    // ignore
-                }
+                // No need to handle saved membership flag as we now get it directly from API data
                 
                 // Regenerate the shop table to show purchase history for this EID
                 const shopTableContainer = document.getElementById('shopTableContainer');
@@ -140,6 +168,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error("Error in EID validation:", error);
                 statusElement.textContent = 'Error checking membership. Please try again.';
                 statusElement.className = 'status-message error';
+            }
+        }
+        
+        // Submit button click handler - now the only way to submit
+        if (eidSubmitBtn) {
+            eidSubmitBtn.addEventListener('click', processEid);
+        }
+        
+        // Add keypress event for Enter key
+        eidInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent form submission if inside a form
+                processEid();
             }
         });
         
@@ -164,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 statusElement.textContent = 'EID should be 2-3 letters followed by 3-8 numbers';
                 statusElement.className = 'status-message warning';
             } else {
-                statusElement.textContent = 'Valid EID format. Click/tab out to check membership.';
+                statusElement.textContent = 'Valid EID format. Click Submit to check membership.';
                 statusElement.className = 'status-message success';
             }
         });

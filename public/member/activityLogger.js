@@ -228,33 +228,34 @@ function generateSubOptions(mainActivity) {
         const buttonLabel = document.createElement('label');
         buttonLabel.className = 'activity-button';
         
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.name = mainActivity.toLowerCase();
-        checkbox.value = subOption.replace(/ /g, ''); // Remove spaces for value
+        // Change from checkbox to radio button for single select
+        const radio = document.createElement('input');
+        radio.type = 'radio'; // Changed from checkbox to radio
+        radio.name = mainActivity.toLowerCase(); // Same name ensures they belong to the same group
+        radio.value = subOption.replace(/ /g, ''); // Remove spaces for value
         
         // Check if this sub-option matches the preselected one from URL
         if (preSelectedSubOption && 
             preSelectedSubOption.toLowerCase() === subOption.replace(/ /g, '').toLowerCase()) {
-            checkbox.checked = true;
+            radio.checked = true;
             // Will update URL in updateLogButtonState
         }
         
         const span = document.createElement('span');
         span.textContent = subOption;
         
-        buttonLabel.appendChild(checkbox);
+        buttonLabel.appendChild(radio);
         buttonLabel.appendChild(span);
         subButtonsContainer.appendChild(buttonLabel);
         
-        // Store reference to the checkbox
+        // Store reference to the radio button
         if (!checkboxRefs.sub[mainActivity]) {
             checkboxRefs.sub[mainActivity] = [];
         }
-        checkboxRefs.sub[mainActivity].push(checkbox);
+        checkboxRefs.sub[mainActivity].push(radio);
         
         // Add event listener
-        checkbox.addEventListener('change', updateLogButtonState);
+        radio.addEventListener('change', updateLogButtonState);
     });
     
     subOptionsContainer.appendChild(subButtonsContainer);
@@ -271,16 +272,16 @@ function updateLogButtonState() {
     let selectedSubOption = null;
     
     if (currentlySelectedMainActivity) {
-        // If activity has sub-options, require at least one sub-option to be selected
+        // If activity has sub-options, require one sub-option to be selected
         if (activityData[currentlySelectedMainActivity].length > 0) {
             if (checkboxRefs.sub[currentlySelectedMainActivity]) {
-                // Check if any sub-options are selected
+                // Check if any sub-options are selected (now using radio buttons)
                 const subOptions = checkboxRefs.sub[currentlySelectedMainActivity];
-                const selectedCheckbox = subOptions.find(checkbox => checkbox.checked);
+                const selectedRadio = subOptions.find(radio => radio.checked);
                 
-                if (selectedCheckbox) {
+                if (selectedRadio) {
                     shouldEnable = true;
-                    selectedSubOption = selectedCheckbox.value;
+                    selectedSubOption = selectedRadio.value;
                     
                     // Update URL with activity and suboption
                     updateUrlWithActivity(currentlySelectedMainActivity, selectedSubOption);
@@ -320,14 +321,17 @@ function setupLogActivityButtonHandler() {
             return;
         }
         
+        // Change button text and disable it during submission
+        const originalText = this.textContent;
+        this.textContent = 'Submitting...';
+        this.disabled = true;
+        this.classList.add('disabled');
+        
         // Prepare data for submission
         const activityData = collectActivityData(eid);
         
         // Send data to Google Apps Script
-        submitActivityData(activityData);
-        
-        // Reset form state
-        resetActivityForm();
+        submitActivityData(activityData, originalText);
     });
 }
 
@@ -360,25 +364,25 @@ function collectActivityData(eid) {
         if (activityData[mainActivity].length === 0) {
             selectedActivities.push(mainActivity);
         } else {
-            // For activities with sub-options
-            const selectedSubOptions = [];
-            checkboxRefs.sub[mainActivity].forEach(checkbox => {
-                if (checkbox.checked) {
-                    // Convert the value back to display text if needed
-                    const optionIndex = activityData[mainActivity].findIndex(
-                        opt => opt.replace(/ /g, '') === checkbox.value
-                    );
-                    if (optionIndex !== -1) {
-                        selectedSubOptions.push(activityData[mainActivity][optionIndex]);
-                    } else {
-                        selectedSubOptions.push(checkbox.value);
-                    }
-                }
-            });
+            // For activities with sub-options (now only one will be selected)
+            let selectedSubOption = null;
+            // Find the selected radio button
+            const selectedRadio = checkboxRefs.sub[mainActivity].find(radio => radio.checked);
             
-            if (selectedSubOptions.length > 0) {
-                selectedActivities.push(`${mainActivity}: ${selectedSubOptions.join(', ')}`);
-                subActivity = selectedSubOptions.join(', ');
+            if (selectedRadio) {
+                // Convert the value back to display text if needed
+                const optionIndex = activityData[mainActivity].findIndex(
+                    opt => opt.replace(/ /g, '') === selectedRadio.value
+                );
+                if (optionIndex !== -1) {
+                    selectedSubOption = activityData[mainActivity][optionIndex];
+                } else {
+                    selectedSubOption = selectedRadio.value;
+                }
+                
+                // Add the activity with its selected sub-option
+                selectedActivities.push(`${mainActivity}: ${selectedSubOption}`);
+                subActivity = selectedSubOption;
             }
         }
     }
@@ -396,8 +400,9 @@ function collectActivityData(eid) {
 /**
  * Submit activity data to Google Apps Script
  * @param {Object} activitySubmitData - The data to submit
+ * @param {string} originalButtonText - The original button text to restore after submission
  */
-function submitActivityData(activitySubmitData) {
+function submitActivityData(activitySubmitData, originalButtonText) {
     postToAppsScript(activitySubmitData, 
         // Success callback
         () => {
@@ -406,19 +411,30 @@ function submitActivityData(activitySubmitData) {
             
             // Log for debugging
             console.log('Activity logged:', activitySubmitData);
+            
+            // Reset form state after successful submission
+            resetActivityForm(originalButtonText);
         },
         // Error callback
         (error) => {
             alert('Error logging activity. Please try again.');
             console.error('Error logging activity:', error);
+            
+            // Restore button state even on error
+            if (logActivityButton) {
+                logActivityButton.textContent = originalButtonText;
+                logActivityButton.disabled = false;
+                logActivityButton.classList.remove('disabled');
+            }
         }
     );
 }
 
 /**
  * Reset the activity form after submission
+ * @param {string} [originalButtonText='Log Activity'] - The original button text to restore
  */
-function resetActivityForm() {
+function resetActivityForm(originalButtonText = 'Log Activity') {
     // Reset main activity selection
     if (currentlySelectedMainActivity) {
         checkboxRefs.main[currentlySelectedMainActivity].checked = false;
@@ -442,7 +458,10 @@ function resetActivityForm() {
     const otherInput = document.getElementById('otherActivity');
     if (otherInput) otherInput.value = '';
     
-    // Disable the button again
-    logActivityButton.disabled = true;
-    logActivityButton.classList.add('disabled');
+    // Restore the button text and disable it
+    if (logActivityButton) {
+        logActivityButton.textContent = originalButtonText;
+        logActivityButton.disabled = true;
+        logActivityButton.classList.add('disabled');
+    }
 }

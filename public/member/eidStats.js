@@ -3,14 +3,16 @@
  * Functions for handling EID lookups and membership data
  */
 
-import { MEMBERSHIP_CSV_URL, GOOGLE_APPS_SCRIPT_URL } from './constants.js';
+import { GOOGLE_APPS_SCRIPT_URL } from './constants.js';
 
-// Store membership data globally
-let membershipRows = null;
+// Store current API response data
+let currentApiResponse = null;
 // Store purchases by EID
 let purchasesByEid = new Map();
 // Store the current EID
 let currentEid = null;
+// Store available snack items from the API
+let availableSnacks = [];
 
 // Initialize module - auto-load saved EID on script load
 initializeModule();
@@ -18,19 +20,35 @@ initializeModule();
 /**
  * Function to load membership data from Apps Script
  * @param {string} eid - EID to fetch data for
+ * @param {boolean} [useStoredData=false] - Whether to use stored data (only true during page load)
  * @returns {Promise<boolean>} - Promise resolving to true if data was loaded successfully
  */
-export async function loadMembershipData(eid) {
+export async function loadMembershipData(eid, useStoredData = false) {
     try {
+        // Only try to use stored data if explicitly requested (on page load)
+        if (useStoredData) {
+            const savedData = getSavedApiResponse(eid);
+            
+            // If we have saved data, use it
+            if (savedData) {
+                console.log(`Using saved API data for ${eid} from localStorage (page load)`);
+                
+                // Process the saved data as if it came from the API
+                processApiResponse(savedData);
+                
+                return true;
+            }
+        }
+        
+        // Always make a fresh API call for explicit user actions (submit button)
         const result = await fetchDataFromAppsScript(GOOGLE_APPS_SCRIPT_URL, eid);
         
-        if (result.success && result.format === 'csv') {
-            membershipRows = result.data;
+        if (result.success && result.format === 'json') {
+            // Process the API response
+            processApiResponse(result.data);
             
-            // Parse purchase information if it exists in the data
-            if (membershipRows.length > 0) {
-                parsePurchaseData(membershipRows);
-            }
+            // API response is already saved by fetchDataFromAppsScript
+            
             return true;
         }
         return false;
@@ -41,54 +59,75 @@ export async function loadMembershipData(eid) {
 }
 
 /**
- * Function to parse purchase data from membership rows
- * @param {Array} rows - Array of membership data rows
+ * Process API response data
+ * @param {Object} jsonData - The API response data
  */
-export function parsePurchaseData(rows) {
-    purchasesByEid = new Map();
+function processApiResponse(jsonData) {
+    // Store the entire API response directly
+    currentApiResponse = jsonData;
     
-    // Skip header row (row 0)
-    for (let i = 1; i < rows.length; i++) {
-        // Check if we have enough columns and column 3 has purchase data
-        if (rows[i].length >= 3 && rows[i][2]) {
-            const purchaseData = rows[i][2];
-            if (purchaseData.indexOf("km54774") > -1) {
-                console.log(purchaseData);
-            }
-            
-            // Parse purchase data format like "rasform25;id:nbb648;shirts:1;shirtl:1"
-            const parts = purchaseData.split(';');
-            let eid = null;
-            let purchases = {};
+    // Parse payment data from the array format
+    parseJsonPaymentData(jsonData);
+    
+    // Update available snacks if present
+    if (Array.isArray(jsonData.snack) && jsonData.snack.length > 0) {
+        updateAvailableSnacks(jsonData.snack);
+    }
+}
+
+// CSV-based purchase parsing function removed as the API now returns only JSON
+
+/**
+ * Function to parse payment data from JSON format
+ * @param {Object} memberData - Member data object from API
+ */
+export function parseJsonPaymentData(memberData) {
+    const eid = memberData.eid.toLowerCase();
+    if (!eid) return;
+    
+    // Reset purchases for this EID
+    const purchases = {};
+    
+    // Process payments array
+    if (Array.isArray(memberData.payments)) {
+        memberData.payments.forEach(payment => {
+            // Parse payment string format like "id:km54774;shirtM:1" or "rasform25;id:km54774;shirtm:1;shirtl:1"
+            const parts = payment.split(';');
             
             parts.forEach(part => {
-                if (part.startsWith('id:')) {
-                    eid = part.substring(3).toLowerCase();
-                } else if (part.includes(':')) {
+                if (!part.startsWith('id:') && part.includes(':')) {
                     const [itemId, quantity] = part.split(':');
                     if (itemId && quantity) {
                         const key = itemId.toLowerCase();
                         purchases[key] = (purchases[key] || 0) + (parseInt(quantity) || 0);
-                    }} 
-               
-            });
-            
-            // If we found an EID and purchases, merge with existing or add to map
-            if (eid && Object.keys(purchases).length > 0) {
-                if (purchasesByEid.has(eid)) {
-                    const existingPurchases = purchasesByEid.get(eid);
-                    // Merge purchases, adding quantities
-                    Object.entries(purchases).forEach(([id, qty]) => 
-                        existingPurchases[id] = (existingPurchases[id] || 0) + qty);
-                } else {
-                    purchasesByEid.set(eid, purchases);
+                    }
                 }
-            }
-        }
+            });
+        });
     }
     
-    console.log(purchasesByEid);
-    console.log('Parsed purchase data for', purchasesByEid.size, 'members');
+    // Don't automatically add snacks to purchases - only if they were actually purchased
+    // Comment out the problematic code that was adding snacks to purchases
+    /* 
+    if (Array.isArray(memberData.snack)) {
+        memberData.snack.forEach(snackItem => {
+            if (snackItem.id && snackItem.irl > 0) {
+                const key = snackItem.id.toLowerCase();
+                purchases[key] = (purchases[key] || 0) + snackItem.irl;
+            }
+        });
+    }
+    */
+    
+    // Store the purchases in the global map
+    if (Object.keys(purchases).length > 0) {
+        purchasesByEid.set(eid, purchases);
+        console.log('Parsed JSON payment data for', eid, ':', purchases);
+    } else {
+        // Ensure we have an empty purchases object for this EID
+        purchasesByEid.set(eid, {});
+        console.log('No purchases found for', eid);
+    }
 }
 
 /**
@@ -109,8 +148,9 @@ export async function fetchMemberInfo(eid) {
     }
     
     try {
-        // Load membership data directly using shared fetchDataFromAppsScript function
-        const dataLoaded = await loadMembershipData(eid);
+        // Load membership data directly from API - always use fresh data when user submits
+        // Pass false to ensure we don't use stored data for explicit user submissions
+        const dataLoaded = await loadMembershipData(eid, false);
         if (!dataLoaded) {
             throw new Error('Failed to load membership data');
         }
@@ -140,41 +180,7 @@ export async function fetchMemberInfo(eid) {
     }
 }
 
-/**
- * Helper function to parse CSV text
- * @param {string} text - CSV text to parse
- * @returns {Array} - Array of parsed CSV rows
- */
-export function parseCSV(text) {
-    // Split the text into rows
-    const rows = text.split('\n');
-    
-    // Parse each row
-    return rows.map(row => {
-        // Handle quoted values with commas inside
-        let inQuote = false;
-        let currentValue = '';
-        const values = [];
-        
-        for (let i = 0; i < row.length; i++) {
-            const char = row[i];
-            
-            if (char === '"') {
-                inQuote = !inQuote;
-            } else if (char === ',' && !inQuote) {
-                values.push(currentValue.trim());
-                currentValue = '';
-            } else {
-                currentValue += char;
-            }
-        }
-        
-        // Add the last value
-        values.push(currentValue.trim());
-        
-        return values;
-    });
-}
+// CSV parsing function removed as the API now returns only JSON
 
 /**
  * Get purchases by EID
@@ -192,23 +198,16 @@ export function getPurchasesByEid(eid) {
  * @returns {boolean} - True if the member exists
  */
 export function checkMemberExists(eid) {
-    // If no data loaded or no EID provided, return false
-    if (!membershipRows || !eid) return false;
+    // Get the stored API response
+    const apiResponse = getSavedApiResponse(eid);
     
-    // Normalize the search EID
-    const normalizedSearchEid = eid.trim().toLowerCase();
-    
-    // Check if there's an EID match in the first column
-    for (let i = 1; i < membershipRows.length; i++) {
-        if (membershipRows[i].length > 0) {
-            const rowEid = membershipRows[i][0].trim().toLowerCase();
-            if (rowEid === normalizedSearchEid) {
-                return true;
-            }
-        }
+    if (!apiResponse) {
+        return false;
     }
     
-    return false;
+    // If there's a timestamp in the response, the member exists
+    // The timestamp indicates that they've filled out the membership form
+    return !!apiResponse.timestamp;
 }
 
 /**
@@ -216,7 +215,7 @@ export function checkMemberExists(eid) {
  * @returns {boolean} - True if data is loaded
  */
 export function isMembershipDataLoaded() {
-    return membershipRows !== null;
+    return currentApiResponse !== null;
 }
 
 /**
@@ -228,33 +227,105 @@ export function getCurrentEid() {
 }
 
 /**
- * Save EID to localStorage for future use
- * @param {string} eid - EID to save
- * @param {boolean} memberExists - Whether the member exists
+ * Get available snacks from the API response
+ * @returns {Array} - Array of snack objects
  */
-export function saveEidToStorage(eid, memberExists) {
-    if (!eid) return;
-    
-    try {
-        localStorage.setItem('savedEid', eid.trim().toLowerCase());
-        localStorage.setItem('savedEidMemberExists', memberExists ? '1' : '0');
-        // Update current EID
-        currentEid = eid.trim().toLowerCase();
-    } catch (e) {
-        console.warn('Unable to save EID to localStorage', e);
+export function getAvailableSnacks() {
+    return availableSnacks;
+}
+
+/**
+ * Update available snacks from API response
+ * @param {Array} snacks - Array of snack objects from the API
+ */
+export function updateAvailableSnacks(snacks) {
+    if (Array.isArray(snacks)) {
+        availableSnacks = snacks.map(snack => ({
+            id: snack.id,
+            name: snack.text,
+            price: snack.price,
+            online: snack.online === 1,
+            irl: snack.irl === 1
+        }));
+        
+        console.log('Updated available snacks:', availableSnacks);
     }
 }
 
 /**
- * Clear saved EID from localStorage
+ * Save the API response data to localStorage
+ * @param {string} eid - EID associated with this data (not used for storage key)
+ * @param {Object} apiData - The API response data to save
+ */
+export function saveApiResponseToStorage(eid, apiData) {
+    if (!apiData) return;
+    
+    try {
+        // Store the API response data as a JSON string using a single key
+        localStorage.setItem('apiData', JSON.stringify(apiData));
+        console.log(`Saved API data to localStorage`);
+    } catch (e) {
+        console.warn('Unable to save API data to localStorage', e);
+    }
+}
+
+/**
+ * Get saved API response data from localStorage
+ * @param {string} eid - EID to match against stored data (optional)
+ * @returns {Object|null} - The saved API data or null if not found
+ */
+export function getSavedApiResponse(eid) {
+    try {
+        const savedData = localStorage.getItem('apiData');
+        if (!savedData) return null;
+        
+        const parsedData = JSON.parse(savedData);
+        
+        // If eid is provided, verify it matches the stored data's EID
+        if (eid && parsedData.eid && 
+            eid.trim().toLowerCase() !== parsedData.eid.trim().toLowerCase()) {
+            console.log('Saved API data EID does not match requested EID');
+            return null;
+        }
+        
+        return parsedData;
+    } catch (e) {
+        console.warn('Unable to retrieve API data from localStorage', e);
+        return null;
+    }
+}
+
+
+
+// Removed isApiDataStale function as we're not using it
+
+/**
+ * Save EID to localStorage functionality removed
+ * EID is now saved as part of the API response data
+ */
+export function saveEidToStorage(eid, memberExists) {
+    if (!eid) return;
+    
+    // Just update the current EID in memory
+    currentEid = eid.trim().toLowerCase();
+    console.log(`Updated current EID to: ${currentEid}`);
+    
+    // No longer saving separate EID in localStorage
+}
+
+/**
+ * Clear saved API data from localStorage
  */
 export function clearSavedEid() {
     try {
-        localStorage.removeItem('savedEid');
-        localStorage.removeItem('savedEidMemberExists');
+        // Clear the API data
+        localStorage.removeItem('apiData');
+        
+        // Reset current EID
         currentEid = null;
+        console.log('Cleared API data from localStorage');
     } catch (e) {
-        console.warn('Unable to clear localStorage for EID', e);
+        console.warn('Unable to clear localStorage API data', e);
     }
 }
 
@@ -264,19 +335,26 @@ export function clearSavedEid() {
 function initializeModule() {
     // Run this once when the script is loaded
     try {
-        const savedEid = localStorage.getItem('savedEid');
-        if (savedEid && savedEid.trim() !== '') {
-            currentEid = savedEid.trim().toLowerCase();
-            console.log(`Found saved EID: ${currentEid}, will auto-load data`);
-            
-            // Use setTimeout to ensure this runs after the DOM is ready
-            setTimeout(() => {
-                loadMembershipData(currentEid).then(success => {
-                    if (success) {
-                        // Check if member truly exists by exact EID match
+        // Check if we have saved API data
+        const savedApiData = localStorage.getItem('apiData');
+        if (savedApiData) {
+            try {
+                const apiData = JSON.parse(savedApiData);
+                
+                // Check if the API data has an EID
+                if (apiData && apiData.eid && apiData.eid.trim() !== '') {
+                    currentEid = apiData.eid.trim().toLowerCase();
+                    console.log(`Found saved API data with EID: ${currentEid}, will auto-load`);
+                    
+                    // Use setTimeout to ensure this runs after the DOM is ready
+                    setTimeout(() => {
+                        // Process the saved API data
+                        processApiResponse(apiData);
+                        
+                        // Check if member exists based on timestamp
                         const memberExists = checkMemberExists(currentEid);
                         
-                        console.log(`Auto-loaded membership data for ${currentEid}, member exists: ${memberExists}`);
+                        console.log(`Auto-loaded API data for ${currentEid}, member exists: ${memberExists}`);
                         
                         // Dispatch a custom event that other scripts can listen for
                         document.dispatchEvent(new CustomEvent('eidDataLoaded', { 
@@ -286,12 +364,14 @@ function initializeModule() {
                                 memberExists: memberExists
                             }
                         }));
-                    }
-                });
-            }, 0);
+                    }, 0);
+                }
+            } catch (parseError) {
+                console.warn('Unable to parse saved API data', parseError);
+            }
         }
     } catch (e) {
-        console.warn('Unable to auto-load EID from localStorage', e);
+        console.warn('Unable to auto-load API data from localStorage', e);
     }
 }
 
@@ -329,45 +409,36 @@ export async function fetchDataFromAppsScript(url, eid, statusElementId = 'dataS
             throw new Error('Failed to fetch data');
         }
         
-        // Check if response is CSV (based on Content-Type header)
-        const contentType = response.headers.get('Content-Type') || '';
-        
-        if (contentType.includes('text/csv')) {
-            // Handle CSV response
-            const csvText = await response.text();
-            const parsedData = parseCSV(csvText);
+        try {
+            const responseText = await response.text();
             
-            // Update status if element exists
-            if (statusElement) {
-                statusElement.textContent = 'Data loaded successfully!';
-                statusElement.className = 'status-message success';
-            }
-            
-            return {
-                success: true,
-                format: 'csv',
-                data: parsedData
-            };
-        } else {
-            // Handle JSON response
-            const jsonData = await response.json();
-            
-            // Update status based on response
-            if (statusElement) {
-                if (jsonData.status === 'success') {
-                    statusElement.textContent = jsonData.message || 'Data loaded successfully!';
+            try {
+                // Parse as JSON
+                const jsonData = JSON.parse(responseText);
+                
+                // If successful, it's JSON format
+                console.log('Received JSON data:', jsonData);
+                
+                // Save API response to localStorage
+                saveApiResponseToStorage(eid, jsonData);
+                
+                // Update status if element exists
+                if (statusElement) {
+                    statusElement.textContent = 'Data loaded successfully!';
                     statusElement.className = 'status-message success';
-                } else {
-                    statusElement.textContent = jsonData.message || 'No data found.';
-                    statusElement.className = 'status-message warning';
                 }
+                
+                return {
+                    success: true,
+                    format: 'json',
+                    data: jsonData
+                };
+            } catch (jsonError) {
+                console.error('Failed to parse JSON response:', jsonError);
+                throw new Error('Invalid JSON response from API');
             }
-            
-            return {
-                success: jsonData.status === 'success',
-                format: 'json',
-                data: jsonData
-            };
+        } catch (error) {
+            throw new Error('Failed to parse response');
         }
     } catch (error) {
         console.error('Error fetching data from Apps Script:', error);

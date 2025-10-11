@@ -3,8 +3,8 @@
  * Contains all shopping-related functionality for the RAS Member Portal
  */
 
-import { shopItems, irlShopItems, HCB_BASE_URL } from './constants.js';
-import { getPurchasesByEid } from './eidStats.js';
+import { HCB_BASE_URL } from './constants.js';
+import { getPurchasesByEid, getAvailableSnacks } from './eidStats.js';
 
 // Track current shop mode globally
 let currentShopMode = 'regular';
@@ -32,6 +32,8 @@ export function initShopFunctionality() {
             processCheckout();
         });
     }
+    
+    // No need to handle customer info fields as they've been removed
     
     // Initial total calculation
     updateTotal();
@@ -128,11 +130,39 @@ export function generateShopTable(mode = null) {
     // Get the items to display based on mode
     let itemsToProcess = [];
     if (isIrlMode) {
-        // In IRL mode, show ONLY IRL items
-        itemsToProcess = [...irlShopItems];
+        // In IRL mode, show ONLY snacks from the API
+        const apiSnacks = getAvailableSnacks();
+        if (apiSnacks.length > 0) {
+            console.log('Using snack items from API:', apiSnacks);
+            
+            // Convert API snacks to our shop item format
+            itemsToProcess = apiSnacks
+                .filter(snack => snack.irl) // Only include IRL available items
+                .map(snack => ({
+                    id: snack.id,
+                    name: snack.name,
+                    price: snack.price
+                }));
+        } else {
+            // If no API snacks available, show a message
+            container.innerHTML = '<p>No snacks currently available. Please try again later.</p>';
+            return;
+        }
     } else {
-        // In regular mode, show ONLY regular shop items
-        itemsToProcess = [...shopItems];
+        // In regular mode, we should still check for online items
+        const apiSnacks = getAvailableSnacks();
+        if (apiSnacks.length > 0) {
+            itemsToProcess = apiSnacks
+                .filter(snack => snack.online) // Only include online available items
+                .map(snack => ({
+                    id: snack.id,
+                    name: snack.name,
+                    price: snack.price
+                }));
+        } else {
+            container.innerHTML = '<p>No items currently available for purchase online. Please try again later.</p>';
+            return;
+        }
     }
     
     // Process items to propagate values
@@ -147,7 +177,7 @@ export function generateShopTable(mode = null) {
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
     
-    const headers = ['Item', 'Quantity', 'Purchased', 'Price', 'Item Photo'];
+    const headers = ['Item', 'Quantity', 'Purchased', 'Price'];
     headers.forEach(headerText => {
         const th = document.createElement('th');
         th.textContent = headerText;
@@ -177,13 +207,7 @@ export function generateShopTable(mode = null) {
         row.setAttribute('data-item-id', item.id);
         row.setAttribute('data-price', item.price);
         
-        // Photo cell
-        const photoCell = document.createElement('td');
-        const img = document.createElement('img');
-        img.src = item.image;
-        img.alt = item.name;
-        img.className = 'item-photo';
-        photoCell.appendChild(img);
+        // Photo cell removed
         
         // Name cell
         const nameCell = document.createElement('td');
@@ -225,12 +249,11 @@ export function generateShopTable(mode = null) {
         });
         quantityCell.appendChild(input);
         
-        // Append cells to row in new order (Item, Quantity, Purchased, Price, Item Photo)
+        // Append cells to row in order (Item, Quantity, Purchased, Price)
         row.appendChild(nameCell);
         row.appendChild(quantityCell);
         row.appendChild(purchasedCell);
         row.appendChild(priceCell);
-        row.appendChild(photoCell);
         
         // Add row to table body
         tbody.appendChild(row);
@@ -244,10 +267,10 @@ export function generateShopTable(mode = null) {
     shopSwitchLink.href = '#'; // Use # to prevent page navigation
     
     if (isIrlMode) {
-        shopSwitchLink.textContent = 'Switch to Online Shop';
+        shopSwitchLink.textContent = 'Switch to Online Items';
         shopSwitchLink.setAttribute('data-target-mode', 'regular');
     } else {
-        shopSwitchLink.textContent = 'Switch to Snack Shop';
+        shopSwitchLink.textContent = 'Switch to Available Snacks';
         shopSwitchLink.setAttribute('data-target-mode', 'irl');
     }
     
@@ -298,10 +321,10 @@ export function updateTotal() {
         totalAmountElement.textContent = (total / 100).toFixed(2);
     }
     
-    // Enable/disable checkout button based on total
+    // Enable/disable checkout button based on total with $1 minimum (100 cents)
     const checkoutBtn = document.getElementById('checkoutBtn');
     if (checkoutBtn) {
-        if (total <= 0) {
+        if (total < 100) {  // Less than $1.00
             checkoutBtn.disabled = true;
             checkoutBtn.classList.add('disabled');
             checkoutBtn.style.opacity = '0.5';
@@ -314,7 +337,52 @@ export function updateTotal() {
         }
     }
     
+    // Update the minimum purchase message style based on total
+    const minNoteElement = document.querySelector('.checkout-min-note');
+    if (minNoteElement) {
+        if (total < 100) {
+            minNoteElement.style.color = '#bf0000'; // Highlight the message in red when below minimum
+            minNoteElement.style.fontWeight = 'bold';
+        } else {
+            minNoteElement.style.color = '#666'; // Regular color when at or above minimum
+            minNoteElement.style.fontWeight = 'normal';
+        }
+    }
+    
     return total;
+}
+
+/**
+ * Get customer info from API data in localStorage
+ * @returns {Object} - Object with name and email properties
+ */
+function getCustomerInfo() {
+    try {
+        const savedApiData = localStorage.getItem('apiData');
+        if (!savedApiData) return { name: '', email: '' };
+        
+        const apiData = JSON.parse(savedApiData);
+        
+        // Construct name from fname and lname
+        const firstName = apiData.fname || '';
+        const lastName = apiData.lname || '';
+        const fullName = [firstName, lastName].filter(Boolean).join(' ');
+        
+        return {
+            name: fullName,
+            email: apiData.email || ''
+        };
+    } catch (e) {
+        console.warn('Unable to get customer info from localStorage', e);
+        return { name: '', email: '' };
+    }
+}
+
+/**
+ * This function no longer needs to do anything since we're not using text inputs
+ */
+function restoreCustomerInfo() {
+    // No need to restore to input fields anymore
 }
 
 /**
@@ -324,8 +392,30 @@ export function processCheckout() {
     const eidInput = document.getElementById('eid');
     const eid = eidInput ? eidInput.value.trim().toLowerCase() : '';
     
+    // Get customer info from API data in localStorage
+    const customerInfo = getCustomerInfo();
+    const customerName = customerInfo.name;
+    const customerEmail = customerInfo.email;
+    
     if (!eid) {
         alert('Please enter your EID first.');
+        return;
+    }
+    
+    if (!customerName) {
+        alert('Your name is missing from your member data. Please contact an officer.');
+        return;
+    }
+    
+    if (!customerEmail) {
+        alert('Your email is missing from your member data. Please contact an officer.');
+        return;
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(customerEmail)) {
+        alert('Your saved email address appears to be invalid. Please contact an officer.');
         return;
     }
     
@@ -335,8 +425,9 @@ export function processCheckout() {
     // Calculate total amount in cents
     const totalAmount = updateTotal();
     
-    // Button should already be disabled if total is 0, but double-check
-    if (totalAmount <= 0) {
+    // Button should already be disabled if total is below $1, but double-check
+    if (totalAmount < 100) { // $1.00 = 100 cents
+        alert('Minimum purchase of $1.00 required.');
         return;
     }
     
@@ -356,8 +447,8 @@ export function processCheckout() {
     
     const messageParam = encodeURIComponent(messageItems.join(';'));
     
-    // Complete URL with parameters
-    const checkoutUrl = `${baseUrl}&message=${messageParam}&amount=${totalAmount}`;
+    // Complete URL with parameters, including name and email
+    const checkoutUrl = `${baseUrl}&message=${messageParam}&amount=${totalAmount}&name=${encodeURIComponent(customerName)}&email=${encodeURIComponent(customerEmail)}`;
     
     // Redirect to HCB checkout
     window.location.href = checkoutUrl;

@@ -6,6 +6,10 @@
     <title>RAS Member Portal</title>
     <!-- Import the styles.css file -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Additional styles for EID submit button -->
+    <link rel="stylesheet" href="styles-additions.css">
+    <!-- Fix for radio button alignment -->
+ 
 </head>
 <body>
     <header>
@@ -19,8 +23,11 @@
             
             <div class="form-group eid-lookup">
                 <label for="eid">Enter your UT EID *</label>
-                <input type="text" id="eid" name="eid" required pattern="[a-zA-Z]{2,3}[0-9]{3,8}" title="Enter a valid UT EID (2-3 letters followed by 3-8 numbers)">
-                <small class="form-text">Your UT EID should be 2-3 letters followed by 3-8 numbers</small>
+                <div class="eid-input-container">
+                    <input type="text" id="eid" name="eid" required pattern="[a-zA-Z]{2,3}[0-9]{3,8}" title="Enter a valid UT EID (2-3 letters followed by 3-8 numbers)">
+                    <button type="button" id="eidSubmitBtn" class="submit-btn">Submit</button>
+                </div>
+                <small class="form-text">Your UT EID should be 2-3 letters followed by 3-8 numbers. Click Submit after entering your EID.</small>
                 <div id="eidStatus" class="status-message"></div>
             </div>
             
@@ -49,16 +56,16 @@
                     
                     <div class="form-group">
                         <label>Have you joined our Discord? <a href="https://discord.gg/BTGXvPJm75" target="_blank">UT IEEE RAS Discord</a> *</label>
-                        <div class="radio-options">
-                            <label><input type="radio" name="joinedDiscord" value="Yes" required> Yes</label>
-                            <label><input type="radio" name="joinedDiscord" value="No" required> No</label>
+                        <div class="radio-options" style="text-align: left !important; display: block !important;">
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="joinedDiscord" value="Yes" required> Yes</label>
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="joinedDiscord" value="No" required> No</label>
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label>Do you agree with the terms listed in our <a href="https://docs.google.com/document/d/1pm9BehQCuGPFe0BewaOvBgG68toN-OdqNVlQg-_4guM/edit?usp=sharing" target="_blank">safety waiver</a>? *</label>
-                        <div class="radio-options">
-                            <label><input type="radio" name="agreeToWaiver" value="Yes" required> Yes</label>
+                        <div class="radio-options" style="text-align: left !important; display: block !important;">
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="agreeToWaiver" value="Yes" required> Yes</label>
                         </div>
                     </div>
                     
@@ -78,34 +85,34 @@
                     
                     <div class="form-group">
                         <label>Major *</label>
-                        <div class="radio-options">
-                            <label><input type="radio" name="major" value="ECE" required> Electrical and Computer Engineering</label>
-                            <label><input type="radio" name="major" value="ME" required> Mechanical Engineering</label>
-                            <label><input type="radio" name="major" value="CS" required> Computer Science</label>
-                            <label><input type="radio" name="major" value="AE" required> Aerospace Engineering</label>
-                            <label><input type="radio" name="major" value="CE" required> Computational Engineering</label>
-                            <label><input type="radio" name="major" value="BME" required> Biomedical Engineering</label>
-                            <label><input type="radio" name="major" value="other" required> Other</label>
+                        <div class="radio-options" style="text-align: left !important; display: block !important;">
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="major" value="ECE" required> Electrical and Computer Engineering</label>
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="major" value="ME" required> Mechanical Engineering</label>
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="major" value="CS" required> Computer Science</label>
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="major" value="AE" required> Aerospace Engineering</label>
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="major" value="CE" required> Computational Engineering</label>
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="major" value="BME" required> Biomedical Engineering</label>
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="major" value="other" required> Other</label>
                         </div>
                         <input type="text" id="otherMajor" name="otherMajor" placeholder="If Other, please specify">
                     </div>
                     
                     <div class="form-group">
                         <label>Minor</label>
-                        <div class="radio-options">
-                            <label><input type="radio" name="minor" value="Robotics"> Robotics</label>
-                            <label><input type="radio" name="minor" value="other"> Other</label>
+                        <div class="radio-options" style="text-align: left !important; display: block !important;">
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="minor" value="Robotics"> Robotics</label>
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="minor" value="other"> Other</label>
                         </div>
                         <input type="text" id="otherMinor" name="otherMinor" placeholder="If Other, please specify">
                     </div>
                     
                     <div class="form-group">
                         <label>Expected Graduation Semester *</label>
-                        <div class="radio-options">
-                            <label><input type="radio" name="gradSemester" value="Fa25" required> Fall 2025</label>
-                            <label><input type="radio" name="gradSemester" value="Sp26" required> Spring 2026</label>
-                            <label><input type="radio" name="gradSemester" value="Fa26" required> Fall 2026</label>
-                            <label><input type="radio" name="gradSemester" value="Sp27" required> Spring 2027</label>
+                        <div class="radio-options" style="text-align: left !important; display: block !important;">
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="gradSemester" value="Fa25" required> Fall 2025</label>
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="gradSemester" value="Sp26" required> Spring 2026</label>
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="gradSemester" value="Fa26" required> Fall 2026</label>
+                            <label style="text-align: left !important; display: block !important;"><input type="radio" name="gradSemester" value="Sp27" required> Spring 2027</label>
                             <label><input type="radio" name="gradSemester" value="Fa27" required> Fall 2027</label>
                             <label><input type="radio" name="gradSemester" value="Sp28" required> Spring 2028</label>
                             <label><input type="radio" name="gradSemester" value="Fa28" required> Fall 2028</label>
@@ -160,7 +167,7 @@
             </div>
 
             <div id="activitySection" class="activity-section">
-                <h3>Log an Activity</h3>
+                <h3>Log Attendance</h3>
                 <div class="activity-info">
                     <p>Select the activity you participated in:</p>
                 </div>
@@ -180,7 +187,11 @@
                 
                 <div class="shop-summary">
                     <div class="total-amount">Total: $<span id="totalAmount">0.00</span></div>
-                    <button id="checkoutBtn" class="checkout-btn">Checkout</button>
+                    
+                    <div class="checkout-form">
+                        <button id="checkoutBtn" class="checkout-btn">Checkout</button>
+                        <div class="checkout-min-note">Minimum $1 purchase required</div>
+                    </div>
                 </div>
             </div>
 
