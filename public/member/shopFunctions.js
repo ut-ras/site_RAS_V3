@@ -402,13 +402,9 @@ export function processCheckout() {
         return;
     }
     
-    if (!customerName) {
-        alert('Your name is missing from your member data. Please contact an officer.');
-        return;
-    }
-    
-    if (!customerEmail) {
-        alert('Your email is missing from your member data. Please contact an officer.');
+    // Check if customer info exists
+    if (customerInfo === null || !customerName || !customerEmail) {
+        alert('Please fill out the membership form above or contact an officer for help.');
         return;
     }
     
