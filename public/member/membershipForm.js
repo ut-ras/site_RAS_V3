@@ -182,6 +182,12 @@ function submitMembershipForm(form, data, submitButton, originalButtonText) {
             // Get the EID from the form data
             const eid = data.EID;
             
+            // Show the shop section since membership is now filled
+            const shopSection = document.getElementById('shopSection');
+            if (shopSection) {
+                shopSection.classList.remove('hidden-until-membership');
+            }
+            
             // Hide the form after successful submission
             setTimeout(() => {
                 form.style.display = 'none';
@@ -233,5 +239,15 @@ export function handleFormVisibility(memberExists, eid) {
     const membershipForm = document.getElementById('membershipForm');
     if (membershipForm) {
         membershipForm.style.display = memberExists ? 'none' : 'block';
+    }
+    
+    // Show/hide shop section based on member existence
+    const shopSection = document.getElementById('shopSection');
+    if (shopSection) {
+        if (memberExists) {
+            shopSection.classList.remove('hidden-until-membership');
+        } else {
+            shopSection.classList.add('hidden-until-membership');
+        }
     }
 }

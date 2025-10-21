@@ -224,6 +224,11 @@ input { padding: .55rem; box-sizing: border-box; margin-top: .6rem; }
   display: none;
 }
 
+/* Container that's hidden until membership is filled */
+.hidden-until-membership {
+  display: none;
+}
+
 .form-toggle-btn {
   background-color: #bf5700; /* UT Austin burnt orange */
   color: white;
