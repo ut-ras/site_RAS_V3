@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to validate EID format - moved outside to be accessible everywhere
     function isValidEid(eid) {
-        const eidPattern = /^[a-z]{2,3}[0-9]{3,8}$/;
+        const eidPattern = /^[a-z]{2,3}[0-9]{2,8}$/;
         return eidPattern.test(eid);
     }
 
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Validate EID format
             if (!isValidEid(eid)) {
-                statusElement.textContent = 'Invalid EID format. Please enter 2-3 lowercase letters followed by 3-8 numbers.';
+                statusElement.textContent = 'Invalid EID format. Please enter 2-3 lowercase letters followed by 2-8 numbers.';
                 statusElement.className = 'status-message error';
                 return;
             }
