@@ -4,21 +4,27 @@ export default function Awards() {
   const initialHeader = "Awards";
   const initialAwardContent = (
     <>
+      <div className="font-bold">2025</div>
+      VEX AI Robotics Competition World Champion (Tournament)
+      <br />
+      <div className="font-bold">2025</div>
+      VEX U Robotics Texas Semifinalist & Design Award
+      <br />
       <div className="font-bold">2024</div>
       VEX AI Robotics Competition World Champion (Excellence Award)
       <br />
       <div className="font-bold">2023</div> VEXU World Championship Build Award
       <br />
       <div className="font-bold">2022</div> RoboMaster - First Prize - 4th in 2022 North American RoboMaster Competition
-      <div className="font-bold">2013</div>
-      IGVC - 15th AutoNav Challenge - DoloRAS 
-      <br />
     </>
   );
 
   const newHeader = "";
   const newAwardContent = (
     <>
+      <div className="font-bold">2013</div>
+      IGVC - 15th AutoNav Challenge - DoloRAS 
+      <br />
       <div className="font-bold">2007</div> 
       IGVC JAUS Level 1 Award; BlastyRAS  
       <br />
