@@ -414,6 +414,7 @@ function submitActivityData(activitySubmitData, originalButtonText) {
             
             // Reset form state after successful submission
             resetActivityForm(originalButtonText);
+            alert('Successfully submitted attendance. Thanks!');
         },
         // Error callback
         (error) => {
