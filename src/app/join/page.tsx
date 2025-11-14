@@ -23,7 +23,7 @@ const JoinPage: React.FC = () => {
           <br />
           New members are required to fill a{' '}
           <a
-            href="https://forms.gle/ApJrJw7zuGN56PVf9"
+            href="https://ras.ece.utexas.edu/member/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#BF5700] underline hover:text-[#cc7933]"
