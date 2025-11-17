@@ -1,0 +1,119 @@
+# IEEE RAS UT Austin
+
+This is the official website for the IEEE Robotics and Automation Society (RAS) chapter at the University of Texas at Austin.
+
+We are a student-led organization dedicated to advancing robotics, automation, and related technologies through education, research, and community engagement.
+
+## About Us
+
+The RAS chapter organizes workshops, competitions, tech talks, and social events to foster innovation in robotics. We collaborate with industry partners and offer opportunities for students to gain hands-on experience across multiple competitive teams and projects.
+
+## Competition Teams & Committees
+
+### VEX U - Team GHOST
+Team GHOST is UT Austin's competitive VEX U robotics team competing in both VEXU and VEX AI competitions. They feature an advanced software stack running on NVIDIA Orin Nano with ROS2, complete localization using lidar/IMU/odometry, and innovative mechanical designs including swerve drive systems.
+
+**Recent Robots:**
+- Baby Jerry (2025-present)
+- Omega Jerry (2025) - High Stakes competition
+- George (2024) - Over Under competition
+
+**Achievements:**
+- VEX AI Excellence Award (highest tournament award)
+- VEX Worlds Build Award
+- 156 points - highest score at tournament
+
+**Discord:** https://discord.gg/DvPsTE94qe
+
+The team emphasizes personal development with structured onboarding for mechanical (CAD/design), software (ROS2/control theory), project management, and strategy. They give back through open-sourced materials and mentoring local VEX teams.
+
+### RoboMaster - Team Stampede
+Stampede competes in RoboMaster North America, an esports-robotics fusion featuring custom-built combat robots in physical arenas. Founded in 2021, they achieved 4th place in their first competition and reached Top 8 among 25+ universities worldwide in 2023-2024.
+
+**Robot Types:**
+- **Standard** - All-round workhorse with 17mm launcher, highly maneuverable for 3v3 and 1v1 combat
+- **Hero** - Heavy damage dealer with 42mm launcher and increased health pool
+- **Sentry** - Fully autonomous dual-turret robot with computer vision and simultaneous targeting
+
+**Technical Stack:**
+- Custom PCBs designed in KiCAD for power/data distribution
+- NVIDIA Jetson processors with Intel RealSense cameras
+- Advanced computer vision, localization, auto-targeting, and self-navigation
+- Bare-metal firmware with hardware drivers and control algorithms
+- SolidWorks design with FEA optimization
+
+**Meetings:**
+- Team Meetings: Fridays 5-6:30pm in ECJ 1.214
+- Work Meetings: Sundays 1-5pm in ETC 2.136
+- Discord: https://discord.gg/QSNPf3aPMs
+
+### Demobots
+Demobots creates interactive demonstration robots for outreach and education. Projects showcase diverse robotics concepts and engage the community at events.
+
+**Active Projects:**
+- **Couchbot** - Interactive couch robot
+- **Chessbot** - Autonomous chess-playing robot
+- **Polargraph** - Drawing robot creating large-scale art
+- **Dancebot** - Entertainment robot with choreographed movements
+- **Armbot** - Robotic arm demonstration
+- **TOA (The One Arm)** - Advanced arm manipulation project
+
+**Discord:** https://discord.gg/fU7qEDc322
+
+### Robotathon
+An annual fall semester introductory robotics competition created and run by UT IEEE RAS. About 50-100 participants (no prior experience required) form teams of 4-6 students, each paired with a RAS mentor.
+
+**Competition Format:**
+- 9-week competition period
+- Teams design and build robots to compete in themed challenges
+- 2-5 hours/week time commitment
+- Workshops and office hours provided
+
+**Recent Themes:**
+- 2024: RASterchef
+- 2023: RAStronaut
+- 2022: JuRASsic Park
+
+**Resources:** https://ut-ras.github.io/RobotathonESP32/
+
+Many RAS members started their robotics journey through Robotathon before joining other committees.
+
+## Key Sections
+
+- **Home**: Overview of activities and latest news
+- **About**: Mission, leadership, and organizational history
+- **Events**: Upcoming workshops, competitions, and meetings
+- **Support**: Information for sponsors, partners, and donations
+- **Members**: Resources for current members, activity tracking, and forms
+- **Committees**: Details on VEX, RoboMaster, Demobots, Robotathon, and Advanced Projects
+
+## Corporate Partnership
+
+RAS collaborates with corporate partners through:
+- General meetings and tech talks
+- Hands-on workshops
+- Social events (virtual, in-person, and hybrid formats)
+
+View our corporate packet: /ut_ieee_ras_corp_packet.pdf
+
+## Support & Donations
+
+Support RAS through our donation page: https://hcb.hackclub.com/donations/start/austin-ieee-ras
+
+## Contact
+
+General inquiries & Corporate relations: utrascorporate@gmail.com
+
+## Social Media & Links
+
+- Instagram: https://www.instagram.com/ut_ieee_ras/
+- YouTube: https://www.youtube.com/@ut_ieee_ras
+- GitHub: https://github.com/ut-ras
+- Main Discord: https://discord.gg/ehmhUTZ2NZ
+
+### Committee-Specific Discords
+- VEX U: https://discord.gg/DvPsTE94qe
+- RoboMaster: https://discord.gg/QSNPf3aPMs
+- Demobots: https://discord.gg/fU7qEDc322
+
+Last updated: November 2025

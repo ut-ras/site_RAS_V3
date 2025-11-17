@@ -20,7 +20,7 @@ const Support: React.FC = () => {
           Please{' '}
           <a 
             className="text-[#BF5700] font-bold underline hover:text-[#cc7933] hover:cursor-pointer"
-            href="mailto:gracewl@utexas.edu"
+            href="mailto:utrascorporate@gmail.com"
           >
             contact us
           </a>{' '}
