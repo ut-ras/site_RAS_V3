@@ -27,9 +27,9 @@ const Support: React.FC = () => {
           if you have any questions or for more information. <br /> <br />
           If you would like to become a supporter, please view our{' '}
           <a 
-            href="https://drive.google.com/file/d/1PpTgN_sBkZPoK2QfrdiO4NSIL-gvcZ-N/view"
+            href="/ut_ieee_ras_corp_packet.pdf"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener"
             className="text-[#BF5700] font-bold underline hover:text-[#cc7933] hover:cursor-pointer"
           >
             corporate packet
@@ -41,7 +41,7 @@ const Support: React.FC = () => {
            <a 
             href="https://hcb.hackclub.com/donations/start/austin-ieee-ras"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener"
             className="text-[#BF5700] font-bold underline hover:text-[#cc7933] hover:cursor-pointer"
           >
            our donation page.
