@@ -46,7 +46,9 @@ export default function Home() {
         />
         {/* Home Gradient */}
         <div className="absolute inset-0 bg-[linear-gradient(90deg,black_0%,black_5%,transparent_35%,transparent_100%)]"></div> 
-        {/* Home content */}
+        <p className="text-5xl flex left-15 md:left-30 top-70 md:top-60 absolute">
+          UT Austin Chapter 
+        </p>        {/* Home content */}
         <p className="text-2xl flex left-20 md:left-40 top-100 md:top-110 absolute">
           MAKING ROBOTICS ACCESSIBLE
         </p>
@@ -60,7 +62,7 @@ export default function Home() {
           className="fixed flex left-[20vw] top-10 md:left-30 md:top-30 md:mt-0 mt-35 text-center text-white font-extrabold"
         >
           <span className="text-7xl md:text-9xl" style={{ opacity: opacity }}>
-            UT IEEE <br />RAS
+            IEEE RAS
           </span>
         </p>
       </div>
