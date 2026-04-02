@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import cadence from '../../../public/images/sponsors/Cadence-Logo.png'
+import pcbway from '../../../public/images/sponsors/PCBWay-Logo.png'
+import gene from '../../../public/images/sponsors/Gene-Logo.png'
 
 
 //Place sponsors here
@@ -17,6 +19,13 @@ export const sponsors = {
     
   ],
   bronze: [],
+  VEXU: [
+    {image: pcbway, name: 'PCBWay'},
+    {image: gene, name: 'Gene Haas Foundation'}
+  ],
+  stampede: [
+    {image: gene, name: 'Gene Haas Foundation'}
+  ]
 };
 
 
@@ -31,11 +40,13 @@ type SponsorTier = {
   gold: Sponsor[];
   silver: Sponsor[];
   bronze: Sponsor[];
+  VEXU: Sponsor[];
+  stampede: Sponsor[];
 };
 
 export default function SponsorDisplay() {
 
-  const tierOrder: (keyof SponsorTier)[] = ['diamond', 'platinum', 'gold', 'silver', 'bronze'];
+  const tierOrder: (keyof SponsorTier)[] = ['diamond', 'platinum', 'gold', 'silver', 'bronze', 'VEXU', 'stampede'];
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
