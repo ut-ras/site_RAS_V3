@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAS Shop</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+    <style>
+        :root {
+            --orange: #bf5700;
+            --orange-dark: #9e4600;
+            --bg: #f5f5f5;
+            --tile-bg: #fff;
+            --border: #ddd;
+            --text: #222;
+            --muted: #666;
+        }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: var(--orange);
+            color: white;
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header h1 { margin: 0; font-size: 1.6rem; }
+        header a { color: white; text-decoration: none; font-size: 1rem; opacity: 0.9; }
+        header a:hover { opacity: 1; text-decoration: underline; }
+
+        main {
+            flex: 1;
+            padding: 22px;
+            padding-bottom: 260px; /* leave room for sticky cart */
+        }
+        .loading, .empty {
+            text-align: center;
+            color: var(--muted);
+            padding: 60px;
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
+        }
+        .tile {
+            background: var(--tile-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 22px 14px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.05s, border-color 0.15s, background 0.15s;
+            font: inherit;
+            color: inherit;
+        }
+        .tile:active { transform: scale(0.97); }
+        .tile.in-cart {
+            border-color: var(--orange);
+            background: #fff7f0;
+        }
+        .tile-name {
+            font-weight: 600;
+            font-size: 1.15rem;
+            line-height: 1.25;
+            margin-bottom: 10px;
+        }
+        .tile-price {
+            color: var(--muted);
+            font-size: 1.05rem;
+        }
+        .qty-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--orange);
+            color: white;
+            border-radius: 999px;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 2px solid var(--border);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+            max-height: 65vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .cart-lines {
+            overflow-y: auto;
+            padding: 10px 22px;
+            max-height: 35vh;
+        }
+        .cart-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-line:last-child { border-bottom: none; }
+        .cart-line .name { flex: 1; font-size: 1.1rem; }
+        .cart-line .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .qty-btn {
+            background: #f5f5f5;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            width: 52px;
+            height: 52px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+        }
+        .qty-btn:active { background: #eaeaea; }
+        .qty-num {
+            min-width: 36px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .cart-line .lineprice {
+            min-width: 80px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            color: var(--muted);
+            font-size: 1.05rem;
+        }
+        .cart-empty {
+            padding: 22px;
+            color: var(--muted);
+            font-style: italic;
+            text-align: center;
+            font-size: 1.05rem;
+        }
+        .customer-fields {
+            display: flex;
+            gap: 10px;
+            padding: 12px 22px;
+            border-top: 1px solid var(--border);
+            background: #fafafa;
+        }
+        .customer-fields input {
+            flex: 1;
+            padding: 12px 14px;
+            font-size: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: white;
+            min-width: 0;
+        }
+        .customer-fields input:focus {
+            outline: none;
+            border-color: var(--orange);
+        }
+        .cart-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            border-top: 1px solid var(--border);
+            background: #fafafa;
+            gap: 16px;
+        }
+        .cart-foot-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .clear-btn {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            width: 52px;
+            height: 52px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b00020;
+            flex-shrink: 0;
+        }
+        .clear-btn:hover { background: #fff0f0; border-color: #b00020; }
+        .clear-btn:active { background: #ffe0e0; }
+        .clear-btn svg { width: 24px; height: 24px; }
+        .total {
+            font-size: 1.7rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+        .checkout {
+            background: var(--orange);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 20px 36px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            min-width: 180px;
+        }
+        .checkout:hover:not(:disabled) { background: var(--orange-dark); }
+        .checkout:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .min-note {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        @media (max-width: 480px) {
+            .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+            main { padding: 14px; padding-bottom: 280px; }
+            header { padding: 14px 16px; }
+            header h1 { font-size: 1.35rem; }
+            .tile { min-height: 120px; padding: 18px 10px; }
+            .tile-name { font-size: 1.05rem; }
+        }
+    </style>
+</head>
+<body x-data="shop()" x-init="init()">
+    <header>
+        <h1>RAS Shop</h1>
+        <a href="/member/">Member portal →</a>
+    </header>
+
+    <main>
+        <template x-if="loading">
+            <div class="loading">Loading items…</div>
+        </template>
+
+        <template x-if="!loading && error">
+            <div class="empty" x-text="error"></div>
+        </template>
+
+        <template x-if="!loading && !error && items.length === 0">
+            <div class="empty">No items currently available.</div>
+        </template>
+
+        <template x-if="!loading && !error && items.length > 0">
+            <div class="grid">
+                <template x-for="item in items" :key="item.id">
+                    <button
+                        class="tile"
+                        :class="{ 'in-cart': (cart[item.id] || 0) > 0 }"
+                        @click="add(item.id)"
+                    >
+                        <span class="tile-name" x-text="item.name"></span>
+                        <span class="tile-price" x-text="formatPrice(item.price)"></span>
+                        <span class="qty-badge" x-show="(cart[item.id] || 0) > 0" x-text="cart[item.id]"></span>
+                    </button>
+                </template>
+            </div>
+        </template>
+    </main>
+
+    <div class="cart">
+        <div class="cart-lines" x-show="cartLineCount > 0">
+            <template x-for="line in cartLines" :key="line.id">
+                <div class="cart-line">
+                    <span class="name" x-text="line.name"></span>
+                    <span class="controls">
+                        <button class="qty-btn" @click="remove(line.id)" aria-label="Decrease">−</button>
+                        <span class="qty-num" x-text="line.qty"></span>
+                        <button class="qty-btn" @click="add(line.id)" aria-label="Increase">+</button>
+                    </span>
+                    <span class="lineprice" x-text="formatPrice(line.price * line.qty)"></span>
+                </div>
+            </template>
+        </div>
+        <div class="cart-empty" x-show="cartLineCount === 0">Tap an item to add it to the cart.</div>
+
+        <div class="customer-fields">
+            <input type="text" placeholder="Name (optional)" x-model.lazy="customerName" autocomplete="off">
+            <input type="email" placeholder="Email (optional)" x-model.lazy="customerEmail" autocomplete="off">
+        </div>
+
+        <div class="cart-foot">
+            <div class="cart-foot-left">
+                <button
+                    class="clear-btn"
+                    x-show="cartLineCount > 0"
+                    @click="clearCart()"
+                    aria-label="Clear cart"
+                    title="Clear cart"
+                >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                        <path d="M10 11v6"></path>
+                        <path d="M14 11v6"></path>
+                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                    </svg>
+                </button>
+                <div>
+                    <div class="total">Total: $<span x-text="(total/100).toFixed(2)"></span></div>
+                    <div class="min-note" x-show="total > 0 && total < 100">Minimum $1.00</div>
+                </div>
+            </div>
+            <button class="checkout" :disabled="total < 100" @click="checkout()">Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        // Shared with the member portal — keep these in sync if they ever change there.
+        const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkHNj7J8ai6G9AFmm373TQqI0o02b9WLVkDJwPvavGOlw7XRTC8kacCEkoeblVPKCB/exec';
+        const HCB_BASE_URL = 'https://hcb.hackclub.com/donations/start/austin-ieee-ras?&fee_covered=1&goods=true';
+        const ITEMS_STORAGE_KEY = 'rasShopItems';
+
+        const DEFAULT_NAME = 'ras shop irl';
+        const DEFAULT_EMAIL = 'ut.ieee.ras+shop@gmail.com';
+
+        function shop() {
+            return {
+                items: [],
+                cart: {},
+                loading: true,
+                error: null,
+                customerName: '',
+                customerEmail: '',
+
+                async init() {
+                    // Show cached items instantly so the page is usable offline / on slow networks.
+                    try {
+                        const cached = localStorage.getItem(ITEMS_STORAGE_KEY);
+                        if (cached) {
+                            const parsed = JSON.parse(cached);
+                            if (Array.isArray(parsed) && parsed.length > 0) {
+                                this.items = parsed;
+                                this.loading = false;
+                            }
+                        }
+                    } catch (_) { /* ignore corrupt cache */ }
+
+                    // Then fetch fresh data and sync.
+                    try {
+                        // The Apps Script GET requires an `eid` param but returns the snack
+                        // list regardless. Use a placeholder so we never look like a real member.
+                        const url = new URL(APPSCRIPT_URL);
+                        url.searchParams.set('eid', '_shopmode');
+                        const res = await fetch(url.toString());
+                        if (!res.ok) throw new Error('HTTP ' + res.status);
+                        const data = await res.json();
+                        const snacks = Array.isArray(data.snack) ? data.snack : [];
+                        const fresh = snacks
+                            .filter(s => s.shop === 1)
+                            .map(s => ({ id: s.id, name: s.text, price: s.price }));
+                        this.items = fresh;
+                        try { localStorage.setItem(ITEMS_STORAGE_KEY, JSON.stringify(fresh)); } catch (_) {}
+
+                        // Drop cart entries for items that no longer exist in the catalog.
+                        const validIds = new Set(fresh.map(i => i.id));
+                        for (const id of Object.keys(this.cart)) {
+                            if (!validIds.has(id)) delete this.cart[id];
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        // Only surface an error if we have nothing at all to show.
+                        if (this.items.length === 0) {
+                            this.error = 'Could not load shop items. Refresh to try again.';
+                        }
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                add(id) {
+                    this.cart[id] = (this.cart[id] || 0) + 1;
+                },
+                remove(id) {
+                    const next = (this.cart[id] || 0) - 1;
+                    if (next <= 0) delete this.cart[id];
+                    else this.cart[id] = next;
+                },
+                clearCart() {
+                    if (this.cartLineCount === 0) return;
+                    if (confirm('Clear cart?')) this.cart = {};
+                },
+
+                get cartLines() {
+                    return this.items
+                        .filter(it => (this.cart[it.id] || 0) > 0)
+                        .map(it => ({ id: it.id, name: it.name, price: it.price, qty: this.cart[it.id] }));
+                },
+                get cartLineCount() {
+                    return this.cartLines.length;
+                },
+                get total() {
+                    return this.cartLines.reduce((sum, l) => sum + l.price * l.qty, 0);
+                },
+
+                formatPrice(cents) {
+                    return '$' + (cents / 100).toFixed(2);
+                },
+
+                checkout() {
+                    if (this.total < 100) return;
+                    // `id:shop` marks anonymous walk-up purchases so they're findable in RawPayments.
+                    const parts = ['rasform25', 'id:shop'];
+                    for (const line of this.cartLines) {
+                        parts.push(`${line.id}:${line.qty}`);
+                    }
+                    const name = this.customerName.trim() || DEFAULT_NAME;
+                    const email = this.customerEmail.trim() || DEFAULT_EMAIL;
+                    const message = encodeURIComponent(parts.join(';'));
+                    window.location.href = `${HCB_BASE_URL}&message=${message}&amount=${this.total}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`;
+                }
+            };
+        }
+    </script>
+</body>
+</html>

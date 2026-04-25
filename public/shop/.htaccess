@@ -1,0 +1,3 @@
+# /shop/.htaccess  (scoped to this directory only)
+Options -MultiViews
+DirectoryIndex index.html
