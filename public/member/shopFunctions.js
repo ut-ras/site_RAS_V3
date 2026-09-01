@@ -441,7 +441,7 @@ export function processCheckout() {
         }
     });
     
-    const messageParam = encodeURIComponent(messageItems.join(';'));
+    const messageParam = encodeURIComponent(`=== DO NOT EDIT UNDER THIS LINE ===\n` + messageItems.join(';'));
     
     // Complete URL with parameters, including name and email
     const checkoutUrl = `${baseUrl}&message=${messageParam}&amount=${totalAmount}&name=${encodeURIComponent(customerName)}&email=${encodeURIComponent(customerEmail)}`;
