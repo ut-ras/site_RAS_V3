@@ -22,6 +22,30 @@
   RewriteRule (.*)$ /$1/ [R=301,L]
 </IfModule>
 
+# Caching
+<IfModule mod_headers.c>
+  # Default (HTML + the hand-written /member, /shop JS & CSS): always revalidate,
+  # so edits go live immediately. ETag/Last-Modified still make these cheap 304s.
+  Header set Cache-Control "no-cache"
+
+  # Next.js build output is content-hashed — the filename changes when the file
+  # does, so it never needs revalidating.
+  SetEnvIf Request_URI "^/_next/static/" CACHE_IMMUTABLE
+  Header set Cache-Control "public, max-age=31536000, immutable" env=CACHE_IMMUTABLE
+
+  # Media, fonts and PDFs: large and rarely edited in place.
+  # (env=!CACHE_IMMUTABLE so hashed files under /_next/static/media keep max-age above)
+  <FilesMatch "\.(png|PNG|jpe?g|JPG|gif|webp|avif|svg|ico|pdf|woff2?|ttf|glb|obj|step|mp4|webm)$">
+    Header set Cache-Control "public, max-age=604800" env=!CACHE_IMMUTABLE
+  </FilesMatch>
+
+  Header unset Expires
+  Header unset Pragma
+</IfModule>
+
+# ETags from mtime+size only (no inode, so they stay stable across redeploys)
+FileETag MTime Size
+
 # ✅ Optional: better headers for sitemap & robots
 <IfModule mod_headers.c>
   <Files "sitemap.xml">
