@@ -176,6 +176,21 @@ document.addEventListener('DOMContentLoaded', function() {
             eidSubmitBtn.addEventListener('click', processEid);
         }
         
+        // Prefill the resume form with the entered EID
+        const resumeLink = document.getElementById('resumeLink');
+        if (resumeLink) {
+            resumeLink.addEventListener('click', function() {
+                const url = new URL(resumeLink.href);
+                const eid = eidInput.value.trim().toLowerCase();
+                url.search = '';
+                if (eid) {
+                    url.searchParams.set('usp', 'pp_url');
+                    url.searchParams.set('entry.1255686949', eid);
+                }
+                resumeLink.href = url.toString();
+            });
+        }
+
         // Add keypress event for Enter key
         eidInput.addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
