@@ -92,7 +92,7 @@ const LeaderPage: React.FC = () => {
                 {member.title}
               </p>
               <p className="text-[clamp(0.7rem,1.8vw,1rem)] text-[#BF5700]">
-                Discord: {member.discord}
+                <a href={`mailto:${member.email}`}>{member.email}</a>
               </p>
             </div>
           ))}
