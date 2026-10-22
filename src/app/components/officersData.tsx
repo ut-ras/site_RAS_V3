@@ -1,39 +1,16 @@
 import { StaticImageData } from 'next/image';
 import RasLogoBigPic from '../../../public/images/ras_logo_big.png';
 
-// Import images statically
-import AnnieVuPic from '../../../public/images/leaders/Annie-Vu.jpg';
-import CarolynHoangPic from '../../../public/images/leaders/Carolyn-Hoang.jpg';
-import ColinTanPic from '../../../public/images/leaders/Colin-Tan.jpg';
-import DhruvBansalPic from '../../../public/images/leaders/Dhruv-Bansal.jpg';
-import DhruvNistalaPic from '../../../public/images/leaders/Dhruv-Nistala.jpg';
-import DylanZuPic from '../../../public/images/leaders/Dylan-Zu.jpg';
-import GraceLiPic from '../../../public/images/leaders/Grace-Li.jpg';
+import AshlynnPic from '../../../public/images/leaders/Ashlynn.png';
+import BarretPic from '../../../public/images/leaders/Barret-Lubianski.jpeg';
 import GustavoVillalobosPic from '../../../public/images/leaders/GustavoVillalobos.jpg';
-import HasifShaikhPic from '../../../public/images/leaders/Hasif-Shaikh.jpg';
-import JakeTomczesynPic from '../../../public/images/leaders/Jake-Tomczesyn.jpg';
 import JeffreyChangPic from '../../../public/images/leaders/Jeffrey-Chang.jpg';
-import JiwooParkPic from '../../../public/images/leaders/Jiwoo-Park.jpg';
 import KarmanyaahMalhotraPic from '../../../public/images/leaders/Karmanyaah-Malhotra.jpg';
-import LakshayGuptaPic from '../../../public/images/leaders/Lakshay-Gupta.jpg';
-import RafaelTorresPic from '../../../public/images/leaders/Rafael-Torres.jpg';
-import RichardBaiPic from '../../../public/images/leaders/Richard-Bai.jpg';
-import ShreeyaGarapatyPic from '../../../public/images/leaders/Shreeya-Garapaty.jpg';
-import TobyNguyenPic from '../../../public/images/leaders/Toby.jpg';
-//import TylerHomPic from '../../../public/images/leaders/Tyler-Hom.jpg';
-import WillRegerPic from '../../../public/images/leaders/Will-Reger.jpg';
+import LinhPic from '../../../public/images/leaders/Linh.jpg';
+import NataliePic from '../../../public/images/leaders/Natalie-Best.png';
+import TobyNguyenPic from '../../../public/images/leaders/Toby-Nguyen.jpg';
 import YilinJinPic from '../../../public/images/leaders/Yilin-Jin.jpg';
 import ZaaraBilalPic from '../../../public/images/leaders/Zaara-Bilal.jpg';
-//import MorrisPic from '../../../public/images/leaders/Zaara-Bilal.jpg'
-import EvanPic from '../../../public/images/leaders/Evan Lai.jpg'
-import BarretPic from '../../../public/images/leaders/Barret-Lubianski.jpeg'
-import NataliePic from '../../../public/images/leaders/Natalie-Best.png'
-import RichardAguPic from '../../../public/images/leaders/Richard-Aguillar.png'
-import JohhnyPic from '../../../public/images/leaders/Johnny-Shen.png'
-import LinhPic from '../../../public/images/leaders/Linh.jpg'
-import AshlynnPic from '../../../public/images/leaders/Ashlynn.png'
-import OlyviaPic from '../../../public/images/leaders/Olyvia.jpg'
-
 
 interface officers {
     name: string;
@@ -51,92 +28,90 @@ interface leaders {
 }
 
 export const officers: officers[] = [
-    { 
-      name: 'Toby Nguyen', title: 'President', email: 'tan942@utexas.edu',
-      profileLink: '', picture: TobyNguyenPic },
     {
-      name: 'Zaara Bilal', title: 'Vice President', email: 'zbilal@utexas.edu',
-      profileLink: '', picture: ZaaraBilalPic },
-    { 
-      name: 'Morris Lin', title: 'Secretary', email: 'morrislinyuan@utexas.edu',
+      name: 'Allen Ai', title: 'President', email: 'haicil@utexas.edu',
       profileLink: '', picture: RasLogoBigPic },
     {
-      name: 'Colin Tan', title: 'Treasurer', email: 'colinyqt@utexas.edu',
-      profileLink: '', picture: ColinTanPic },
+      name: 'Barrett Lubianski', title: 'Vice-President', email: 'barrettlubianski@utexas.edu',
+      profileLink: '', picture: BarretPic },
     {
-      name: 'Allen (Haici) Ai', title: 'Fundraising Coordinator', email: 'haicil@utexas.edu',
+      name: 'Esther Chen', title: 'Treasurer', email: 'estherchen@utexas.edu',
       profileLink: '', picture: RasLogoBigPic },
     {
-      name: 'Linh Tran', title: 'Corporate Relations', email: 'linh.tran@utexas.edu',
-      profileLink: '', picture: LinhPic },
+      name: 'Reuben DeFrates', title: 'Corporate Relations', email: 'edefrates@utexas.edu',
+      profileLink: '', picture: RasLogoBigPic },
     {
-      name: 'Evan Lai', title: 'Corporate Relations', email: 'exl79@my.utexas.edu',
-      profileLink: '', picture: EvanPic },
+      name: 'Tianna Resendez', title: 'Outreach Coordinator', email: 'Tir276@my.utexas.edu',
+      profileLink: '', picture: RasLogoBigPic },
     {
-      name: 'Barrett Lubianski', title: 'Outreach Coordinator', email: 'barrettlubianski@utexas.edu',
-      profileLink: '', picture:  BarretPic},
+      name: 'Yiran Yin', title: 'Secretary', email: 'yy23268@eid.utexas.edu',
+      profileLink: '', picture: RasLogoBigPic },
     {
-      name: 'Gustavo Villalobos', title: 'Special Events Coordinator', email: 'gvp05@utexas.edu',
-      profileLink: '', picture: GustavoVillalobosPic },
+      name: 'Brianna Martinez', title: 'Publicity Coordinator', email: 'bm43647@eid.utexas.edu',
+      profileLink: '', picture: RasLogoBigPic },
     {
-      name: 'Annie Vu', title: 'Publicity Coordinator', email: 'Annie.2005@utexas.edu',
-      profileLink: '', picture: AnnieVuPic },
+      name: 'Neureka Kundu', title: 'Special Events Coordinator', email: 'nk25359@my.utexas.edu',
+      profileLink: '', picture: RasLogoBigPic },
     {
-      name: 'Karmanyaah Malhotra', title: 'Publicity Coordinator', email: 'karmalhotra@utexas.edu',
-      profileLink: '', picture: KarmanyaahMalhotraPic },
+      name: 'Daniel Chen', title: 'Webmaster', email: 'dc48985@eid.utexas.edu',
+      profileLink: '', picture: RasLogoBigPic },
     {
-      name: 'Zaid Albustami', title: 'Webmaster', email: 'zaida@utexas.edu',
+      name: 'Naqi Kazmi', title: 'Fundraising Coordinator', email: 'NKazmi@utexas.edu',
       profileLink: '', picture: RasLogoBigPic },
 ];
 
 export const teamleads: officers[] = [
     {
-      name: 'Dhruv Bansal', title: 'Demobots Committee Head', email: 'dhruvbansal@utexas.edu',
-      profileLink: '', discord: '', picture: DhruvBansalPic },
+      name: 'Karmanyaah Malhotra', title: 'VEXU Head', email: 'karmalhotra@utexas.edu',
+      profileLink: '', discord: '', picture: KarmanyaahMalhotraPic },
     {
-      name: 'Gustaco Villalobos', title: 'Robomaster Committee Head', email: 'gvp05@utexas.edu',
-      profileLink: '', discord: 'thehominator', picture: GustavoVillalobosPic },
-    {
-      name: 'Suhas Voolla', title: 'Robomaster Committee Head', email: 'suhasv@utexas.edu',
-      profileLink: '', discord: '', picture: RasLogoBigPic },
-    {
-      name: 'Hasif Shaikh', title: 'VexU Committee Head', email: 'hasifshaikh@utexas.edu',
-      profileLink: '', discord: 'has02', picture: HasifShaikhPic },
-    {
-      name: 'Natalie Best', title: 'VexU Committee Head', email: 'nbest776@utexas.edu',
+      name: 'Natalie Best', title: 'VEXU Head', email: 'nbest776@utexas.edu',
       profileLink: '', discord: '', picture: NataliePic },
     {
-      name: 'Jeffrey Chang', title: 'Steering Head', email: 'jeffchang@utexas.edu',
-      profileLink: '', discord: 'has02', picture: JeffreyChangPic },
+        name: 'Gustavo Villalobos', title: 'RoboMaster Head', email: 'gvp05@utexas.edu',
+      profileLink: '', discord: '', picture: GustavoVillalobosPic },
+    {
+      name: 'Suhas Voolla', title: 'RoboMaster Head', email: 'suhasv@utexas.edu',
+      profileLink: '', discord: '', picture: RasLogoBigPic },
+    {
+        name: 'George Adamopoulos', title: 'Steering Head', email: 'ga23569@eid.utexas.edu',
+      profileLink: '', discord: '', picture: RasLogoBigPic },
+    {
+      name: 'Aishwarya Immanuelraj', title: 'Steering Head', email: 'ai7644@eid.utexas.edu',
+      profileLink: '', discord: '', picture: RasLogoBigPic },
+    {
+      name: 'Dhruv Bansal', title: 'Demobots Head', email: 'dhruvbansal@utexas.edu',
+      profileLink: '', discord: '', picture: RasLogoBigPic },
 ];
 
 export const leaders: leaders[] = [
-    { name: "Yilin Jin", profileLink: 'https://www.linkedin.com/in/yilin-jin-20b986248/', picture: YilinJinPic }, 
-    { name: "Jiwoo Park", profileLink: 'https://www.linkedin.com/in/jiwoooop/', picture: JiwooParkPic },
-    { name: "Lakshay Gupta", profileLink: 'https://www.linkedin.com/in/lakshay-gupta-168620246/', picture: LakshayGuptaPic },
-    { name: "Wenyu Zhu", profileLink: 'https://www.linkedin.com/in/wenyugzhu/', picture: RasLogoBigPic },
-    { name: "Will Reger", profileLink: 'https://www.linkedin.com/in/will-reger-6760831a1/', picture: WillRegerPic },
-    { name: "Dylan Zu", profileLink: 'https://www.linkedin.com/in/dylan-zu-7807231bb/', picture: DylanZuPic },
-    { name: "Olyvia Witham", profileLink: 'https://www.linkedin.com/in/olyvia-witham-74418628b/', picture: OlyviaPic },
-    
-    { name: "Rafael Torres", profileLink: '', picture: RafaelTorresPic },
-    { name: "Richard Aguilar", profileLink: '', picture:  RichardAguPic},
-    { name: "Andrew Kuo", profileLink: '', picture:  RasLogoBigPic},
+    { name: "Jeffrey Chang", profileLink: '', picture: JeffreyChangPic },
+    { name: "Arnav Jain", profileLink: '', picture: RasLogoBigPic },
+    { name: "Matthew Zhang", profileLink: '', picture: RasLogoBigPic },
+    { name: "Yilin Jin", profileLink: '', picture: YilinJinPic },
+    { name: "Richard Aguilar", profileLink: '', picture: RasLogoBigPic },
+    { name: "Andrew Kuo", profileLink: '', picture: RasLogoBigPic },
     { name: "Ashlynn Tusneem", profileLink: '', picture: AshlynnPic },
-    { name: "Bhavana Katta", profileLink: '', picture:  RasLogoBigPic},
-    { name: "Brianna Dickson", profileLink: '', picture: RasLogoBigPic },
-    { name: "Carolyn Hoang", profileLink: '', picture: CarolynHoangPic },
-    { name: "Dhruv Nistala", profileLink: '', picture: DhruvNistalaPic },
-    { name: "Natalie Best", profileLink: '', picture: RasLogoBigPic },
-    { name: "Eric Liu", profileLink: '', picture: RasLogoBigPic },
-    { name: "Grace Li", profileLink: '', picture: GraceLiPic },
-    { name: "Jake Tomczesyn", profileLink: '', picture: JakeTomczesynPic },
     { name: "Joseph Romero", profileLink: '', picture: RasLogoBigPic },
-    { name: "Junhan (Johnny) Shen", profileLink: '', picture: JohhnyPic },
-    { name: "Richard Bai", profileLink: '', picture: RichardBaiPic },
-    { name: "Shreeya Garapaty", profileLink: '', picture: ShreeyaGarapatyPic },
+    { name: "Junhan (Johnny) Shen", profileLink: '', picture: RasLogoBigPic },
     { name: "Sicheng (Terry) Tan", profileLink: '', picture: RasLogoBigPic },
-    { name: "Sricharan Hari", profileLink: '', picture: RasLogoBigPic },
-    { name: "Tanya Nikam", profileLink: '', picture: RasLogoBigPic },
+    { name: "Olyvia Witham", profileLink: '', picture: RasLogoBigPic },
     { name: "Theodore Hubbard", profileLink: '', picture: RasLogoBigPic },
+    { name: "Annie Vu", profileLink: '', picture: RasLogoBigPic },
+    { name: "Colin Tan", profileLink: '', picture: RasLogoBigPic },
+    { name: "Linh Tran", profileLink: '', picture: LinhPic },
+    { name: "Morris Lin", profileLink: '', picture: RasLogoBigPic },
+    { name: "Deryk Vences", profileLink: '', picture: RasLogoBigPic },
+    { name: "Toby Nguyen", profileLink: '', picture: TobyNguyenPic },
+    { name: "Zaara Bilal", profileLink: '', picture: ZaaraBilalPic },
+    { name: "Samuel Deng", profileLink: '', picture: RasLogoBigPic },
+    { name: "David Chen", profileLink: '', picture: RasLogoBigPic },
+    { name: "Andrew Kwa", profileLink: '', picture: RasLogoBigPic },
+    { name: "Pranav Maringanti", profileLink: '', picture: RasLogoBigPic },
+    { name: "Emilio Lopez", profileLink: '', picture: RasLogoBigPic },
+    { name: "Jericho Perez", profileLink: '', picture: RasLogoBigPic },
+    { name: "Hailin Chen", profileLink: '', picture: RasLogoBigPic },
+    { name: "Guillermo Barrera", profileLink: '', picture: RasLogoBigPic },
+    { name: "Joseph Weiss", profileLink: '', picture: RasLogoBigPic },
+    { name: "Iha Sehgal", profileLink: '', picture: RasLogoBigPic },
 ];
