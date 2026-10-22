@@ -55,9 +55,6 @@ export const officers: officers[] = [
     {
       name: 'Daniel Chen', title: 'Webmaster', email: 'dc48985@eid.utexas.edu',
       profileLink: '', picture: RasLogoBigPic },
-    {
-      name: 'Naqi Kazmi', title: 'Fundraising Coordinator', email: 'NKazmi@utexas.edu',
-      profileLink: '', picture: RasLogoBigPic },
 ];
 
 export const teamleads: officers[] = [
@@ -90,12 +87,9 @@ export const leaders: leaders[] = [
     { name: "Matthew Zhang", profileLink: '', picture: RasLogoBigPic },
     { name: "Yilin Jin", profileLink: '', picture: YilinJinPic },
     { name: "Richard Aguilar", profileLink: '', picture: RasLogoBigPic },
-    { name: "Andrew Kuo", profileLink: '', picture: RasLogoBigPic },
     { name: "Ashlynn Tusneem", profileLink: '', picture: AshlynnPic },
-    { name: "Joseph Romero", profileLink: '', picture: RasLogoBigPic },
     { name: "Junhan (Johnny) Shen", profileLink: '', picture: RasLogoBigPic },
     { name: "Sicheng (Terry) Tan", profileLink: '', picture: RasLogoBigPic },
-    { name: "Olyvia Witham", profileLink: '', picture: RasLogoBigPic },
     { name: "Theodore Hubbard", profileLink: '', picture: RasLogoBigPic },
     { name: "Annie Vu", profileLink: '', picture: RasLogoBigPic },
     { name: "Colin Tan", profileLink: '', picture: RasLogoBigPic },
@@ -105,9 +99,7 @@ export const leaders: leaders[] = [
     { name: "Toby Nguyen", profileLink: '', picture: TobyNguyenPic },
     { name: "Zaara Bilal", profileLink: '', picture: ZaaraBilalPic },
     { name: "Samuel Deng", profileLink: '', picture: RasLogoBigPic },
-    { name: "David Chen", profileLink: '', picture: RasLogoBigPic },
     { name: "Andrew Kwa", profileLink: '', picture: RasLogoBigPic },
-    { name: "Pranav Maringanti", profileLink: '', picture: RasLogoBigPic },
     { name: "Emilio Lopez", profileLink: '', picture: RasLogoBigPic },
     { name: "Jericho Perez", profileLink: '', picture: RasLogoBigPic },
     { name: "Hailin Chen", profileLink: '', picture: RasLogoBigPic },
