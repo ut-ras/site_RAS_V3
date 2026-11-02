@@ -10,6 +10,12 @@
   RewriteCond %{REQUEST_FILENAME}/index.html -f
   RewriteRule ^(.+?)/?$ $1/index.html [L]
 
+  # 1b) Next.js static export emits /foo.html (not /foo/index.html):
+  #     serve it for /foo and /foo/
+  RewriteCond %{REQUEST_FILENAME} ^(.+?)/?$
+  RewriteCond %1.html -f
+  RewriteRule ^(.+?)/?$ $1.html [L]
+
   # 2) Canonicalize: if index.html exists but URL lacks trailing slash, redirect to add it
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME}/index.html -f
